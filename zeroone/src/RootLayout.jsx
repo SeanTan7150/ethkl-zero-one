@@ -55,7 +55,7 @@ export default function RootLayout() {
   const [open, setOpen] = useState(false);
 
   return (
-    <Box sx={{ height: "100%", width: "100%" }}>
+    <Box sx={{ width: "100%", height: "100%" }}>
       <CustomAppBar
         toggleDrawer={() => {
           console.log(open);
@@ -72,9 +72,9 @@ export default function RootLayout() {
         sx={{
           // backgroundColor: "#000",
           // borderRadius: 8,
-          flexGrow: 2,
+          // flexGrow: 2,
           height: "100%",
-          padding: "2rem 2rem 14rem 3rem",
+          // padding: "2rem 2rem 3rem 3rem",
           backgroundColor: "#fff",
         }}
       >
