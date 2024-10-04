@@ -19,6 +19,11 @@ export const sidebarList = {
     inactive: "src/assets/sidebar/inactive/card.png",
     url: "/profile",
   },
+  "Landing Page": {
+    active: "src/assets/sidebar/active/card.png",
+    inactive: "src/assets/sidebar/inactive/card.png",
+    url: "/landing-page",
+  },
   Store: {
     active: "src/assets/sidebar/active/card.png",
     inactive: "src/assets/sidebar/inactive/card.png",

@@ -69,8 +69,13 @@ export default function CustomAppBar({ toggleDrawer }) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar style={{ backgroundColor: "#7c5bca" }}>
+      <AppBar
+        position="static"
+        sx={{
+          backgroundColor: "#000",
+        }}
+      >
+        <Toolbar>
           <IconButton
             size="large"
             edge="start"
