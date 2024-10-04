@@ -207,6 +207,7 @@ export default function CreditPage() {
         width: 1300,
         marginLeft: "auto",
         marginRight: "auto",
+        // height: "100%",
       }}
     >
       <Box sx={{ p: 3, mb: 3, backgroundColor: "#fff", borderRadius: "8px" }}>
@@ -217,17 +218,14 @@ export default function CreditPage() {
               onChange={handleChange}
               aria-label="basic tabs example"
             >
-              <Tab label="Purchase Artist" {...a11yProps(0)} />
+              <Tab label="Purchased Artist" {...a11yProps(0)} />
               <Tab label="Purchase History" {...a11yProps(1)} />
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            {/* Item One
-             */}
             <PurchaseArtistTab />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            {/* Item Two */}
             <PurchaseHistoryTab />
           </CustomTabPanel>
         </Box>

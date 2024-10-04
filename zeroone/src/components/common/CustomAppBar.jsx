@@ -10,6 +10,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 export default function CustomAppBar({ toggleDrawer }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
+
       <AppBar position="static">
         <Toolbar style={{ backgroundColor: "#7c5bca" }}>
           <IconButton
