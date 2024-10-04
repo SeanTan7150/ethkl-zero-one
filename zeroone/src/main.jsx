@@ -10,6 +10,7 @@ import {
   ProfilePage,
   ChatPage,
   StorePage,
+  TestPage,
 } from "./pages/index.js";
 
 import {
@@ -47,16 +48,15 @@ const router = createBrowserRouter([
         path: "/store",
         element: <StorePage />,
       },
+      { path: "/test", element: <TestPage /> },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <ContractContextProvider>
-      {/* <App />
-       */}
-      <RouterProvider router={router} />
-    </ContractContextProvider>
-  </StrictMode>
+  <ContractContextProvider>
+    {/* <App />
+     */}
+    <RouterProvider router={router} />
+  </ContractContextProvider>
 );
