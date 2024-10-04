@@ -71,6 +71,18 @@ button:focus-visible {
   text-decoration: none;
 }
 
+.active-contact{
+  background-color: #E8DEF8;
+}
+
+.non-active-contact{
+  background-color: transparent;
+}
+
+.list-contact:hover{
+  cursor: pointer;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

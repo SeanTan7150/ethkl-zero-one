@@ -15,9 +15,29 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import { Search, Verified, ChatBubbleOutline } from "@mui/icons-material";
+import {
+  Search,
+  Verified,
+  ChatBubbleOutline,
+  //   SendIcon,
+} from "@mui/icons-material";
+import SendIcon from "@mui/icons-material/Send";
+import { SenderMessage, ReplyMessage } from "../../components";
 
 export default function ChatPage() {
+  const [message, setMessage] = React.useState("");
+  const [activeContact, setActiveContact] = React.useState(0);
+
+  const onChangeActiveContact = (index) => {
+    setActiveContact(index);
+    console.log(activeContact);
+  };
+  const onSendMessage = () => {
+    console.log(message);
+    setMessage("");
+    // Send message logic here
+  };
+
   return (
     <div
       style={{
@@ -30,15 +50,18 @@ export default function ChatPage() {
       {/* Left Sidebar */}
       <Paper
         style={{
-          width: 300,
+          minWidth: 450,
           overflowY: "auto",
           borderRight: "1px solid #e0e0e0",
-          padding: "2rem 1rem",
+          padding: "2rem 0rem",
           //   height: "100%",
         }}
       >
         <TextField
-          fullWidth
+          //   fullWidth
+          style={{
+            width: 300,
+          }}
           variant="outlined"
           placeholder="Search"
           InputProps={{
@@ -48,15 +71,31 @@ export default function ChatPage() {
               </InputAdornment>
             ),
           }}
-          style={{ margin: "10px 0" }}
+          //   style={{ margin: "10px 0" }}
         />
         {/* Contact Panel */}
         <List>
           {[...Array(7)].map((_, index) => (
             <ListItem
+              className={`
+                list-contact
+                ${
+                  activeContact === index
+                    ? "active-contact"
+                    : "non-active-contact"
+                }`}
+              onClick={() => {
+                // setActiveContact(index);
+                // console.log(activeContact);
+                onChangeActiveContact(index);
+                // console.log(index);
+              }}
               key={index}
               style={{
                 marginBottom: "1rem",
+                // backgroundColor: `${
+                //   activeContact === index ? "#E8DEF8" : "none"
+                // }`,
               }}
             >
               <ListItemAvatar>
@@ -129,7 +168,7 @@ export default function ChatPage() {
             flexDirection: "column",
           }}
         >
-          <Paper
+          {/* <Paper
             style={{
               padding: "15px 25px",
               marginBottom: 20,
@@ -147,8 +186,13 @@ export default function ChatPage() {
             >
               Message 1
             </Typography>
-          </Paper>
-          <Box
+          </Paper> */}
+          <SenderMessage message="This is the content" />
+          <ReplyMessage
+            message="This is the content"
+            replyMessage="This is the message replied to"
+          />
+          {/* <Box
             style={{
               minWidth: "200px",
               maxWidth: "600px",
@@ -210,9 +254,17 @@ export default function ChatPage() {
                 Reply 1
               </Typography>
             </Paper>
-          </Box>
+          </Box> */}
         </div>
-        <Paper style={{ padding: 10, margin: 10 }}>
+        <Paper
+          style={{
+            padding: "20px 30px",
+            margin: "10px auto",
+            width: "1200px",
+            borderRadius: "10px",
+            backgroundColor: "#ECE6F0",
+          }}
+        >
           <TextField
             fullWidth
             // variant="outlined"
@@ -220,12 +272,22 @@ export default function ChatPage() {
             // style={{
             //   borderBottom: "",
             // }}
+            // slotProps={
+
+            // }
+            value={message}
+            onChange={(event) => {
+              setMessage(event.target.value);
+            }}
             placeholder="Type a message"
             InputProps={{
+              disableUnderline: true,
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton>
-                    <ChatBubbleOutline />
+                  <IconButton onClick={onSendMessage}>
+                    {/* <ChatBubbleOutline />
+                     */}
+                    <SendIcon />
                   </IconButton>
                 </InputAdornment>
               ),
