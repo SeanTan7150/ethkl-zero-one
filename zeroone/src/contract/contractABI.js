@@ -1,0 +1,173 @@
+export const contractABI = [
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "fan", type: "address" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "artist",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "remainingMessages",
+        type: "uint256",
+      },
+    ],
+    name: "MessageSent",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "fan", type: "address" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "artist",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amountPaid",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "messagesBought",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "timestamp",
+        type: "uint256",
+      },
+    ],
+    name: "MessagesPurchased",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "artist",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amountReleased",
+        type: "uint256",
+      },
+    ],
+    name: "PaymentReleased",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "fan", type: "address" },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amountRefunded",
+        type: "uint256",
+      },
+    ],
+    name: "RefundIssued",
+    type: "event",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_fan", type: "address" }],
+    name: "artistReply",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_artist", type: "address" }],
+    name: "buyMessages",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "_fan", type: "address" },
+      { internalType: "address", name: "_artist", type: "address" },
+    ],
+    name: "getRemainingMessages",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "", type: "address" },
+      { internalType: "address", name: "", type: "address" },
+    ],
+    name: "interactions",
+    outputs: [
+      { internalType: "address", name: "fan", type: "address" },
+      { internalType: "address", name: "artist", type: "address" },
+      { internalType: "uint256", name: "remainingMessages", type: "uint256" },
+      { internalType: "uint256", name: "amountPaid", type: "uint256" },
+      { internalType: "uint256", name: "timestamp", type: "uint256" },
+      { internalType: "uint8", name: "status", type: "uint8" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "messagePrice",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "messagesPerPayment",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "refundPeriod",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_artist", type: "address" }],
+    name: "requestRefund",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_artist", type: "address" }],
+    name: "sendMessage",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "_messagePrice", type: "uint256" },
+      { internalType: "uint256", name: "_refundPeriod", type: "uint256" },
+    ],
+    name: "setParameters",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+];
