@@ -4,7 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 import { ContractContextProvider } from "./context";
 import RootLayout from "./RootLayout";
-import { HomePage } from "./pages/index.js";
+import { HomePage, CreditPage, ProfilePage, ChatPage } from "./pages/index.js";
 
 import {
   createBrowserRouter,
@@ -24,6 +24,18 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: <HomePage />,
+      },
+      {
+        path: "/profile",
+        element: <ProfilePage />,
+      },
+      {
+        path: "/chat",
+        element: <ChatPage />,
+      },
+      {
+        path: "/credit",
+        element: <CreditPage />,
       },
     ],
   },

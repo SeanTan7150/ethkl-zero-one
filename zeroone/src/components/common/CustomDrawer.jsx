@@ -18,12 +18,14 @@ export default function CustomDrawer({ open, toggleDrawer }) {
         flexShrink: 0,
         width: drawerWidth,
         height: "100%",
+        // paddingLeft: "2rem",
+        // paddingRight: "2rem",
 
         //       border: 'none',
         //       backgroundColor: '#F8F9FA'
         "& .MuiDrawer-paper": {
           // overflowY: "hidden",
-          // width: drawerWidth,
+          width: drawerWidth,
           height: "100%",
           padding: "1rem 1rem",
           border: "none",
@@ -34,7 +36,6 @@ export default function CustomDrawer({ open, toggleDrawer }) {
           backgroundColor: "#F8F9FA",
         },
       }}
-      // variant="permanent"
       anchor="left"
     >
       {/* <Toolbar /> */}
