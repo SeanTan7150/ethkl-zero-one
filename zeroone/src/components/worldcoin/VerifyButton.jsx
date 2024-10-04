@@ -36,7 +36,9 @@ export default function VerifyButton() {
     >
       {({ open }) => (
         // This is the button that will open the IDKit modal
-        <button onClick={open}>Verify with World ID</button>
+        <button style={{ fontSize: "12px" }} onClick={open}>
+          Verify with World ID
+        </button>
       )}
       {}
     </IDKitWidget>

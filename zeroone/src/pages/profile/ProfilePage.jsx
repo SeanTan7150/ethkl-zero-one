@@ -28,8 +28,13 @@ import {
   Instagram as InstagramIcon,
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
+import VerifiedButton from "../../components/worldcoin/VerifyButton";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 export default function ProfilePage() {
+  const [loginAddress, setLoginAddress] = useLocalStorage("loginAddress", null);
+  const [worldcoinVerified, setWorldcoinVerified] = React.useState(true);
+
   return (
     <Box
       sx={{
@@ -93,23 +98,27 @@ export default function ProfilePage() {
               >
                 Justin Bieber <VerifiedIcon color="primary" fontSize="small" />
               </Typography>
-              <Box
-                style={{
-                  backgroundColor: "#E6E0E9",
-                  padding: "5px 10px",
-                  borderRadius: "50px",
-                }}
-              >
-                <Typography
-                  variant="p"
-                  sx={{
-                    fontSize: "12px",
-                    fontWeight: "bold",
+              {worldcoinVerified ? (
+                <Box
+                  style={{
+                    backgroundColor: "#E6E0E9",
+                    padding: "5px 10px",
+                    borderRadius: "50px",
                   }}
                 >
-                  Worldcoin verified
-                </Typography>
-              </Box>
+                  <Typography
+                    variant="p"
+                    sx={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Worldcoin verified
+                  </Typography>
+                </Box>
+              ) : (
+                <VerifiedButton />
+              )}
             </Box>
             <Typography
               variant="caption"
