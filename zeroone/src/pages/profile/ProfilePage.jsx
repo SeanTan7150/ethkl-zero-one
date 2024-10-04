@@ -185,8 +185,8 @@ export default function ProfilePage() {
             color="primary"
             sx={{
               mr: 2,
-              backgroundColor: "#E8DEF8",
-              color: "#000",
+              backgroundColor: "#333",
+              color: "#fff",
               fontWeight: "bold",
               px: 6,
               py: 1,
@@ -199,8 +199,8 @@ export default function ProfilePage() {
             variant="contained"
             sx={{
               mr: 2,
-              backgroundColor: "#E8DEF8",
-              color: "#000",
+              backgroundColor: "#333",
+              color: "#fff",
               fontWeight: "bold",
               px: 6,
               py: 1,

@@ -10,6 +10,7 @@ import {
   ProfilePage,
   ChatPage,
   StorePage,
+  LandingPage,
 } from "./pages/index.js";
 
 import {
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/home" replace />,
+        element: <Navigate to="/landing-page" replace />,
       },
       {
         path: "/home",
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "/store",
         element: <StorePage />,
+      },
+      {
+        path: "/landing-page",
+        element: <LandingPage />,
       },
     ],
   },
