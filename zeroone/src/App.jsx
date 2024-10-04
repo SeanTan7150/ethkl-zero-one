@@ -1,44 +1,83 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-import { useContractContext } from "./context";
+
+import { ethers } from "ethers";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [connectedAddress, setConnectedAddress] = useState(null);
+  const [loggedInAddress, setLoggedInAddress] = useState(null);
 
-  const dbg = useContractContext();
+  const loadSession = () => {
+    const storedConnectedAddress = sessionStorage.getItem("connectedAddress");
+    const storedLoggedInAddress = sessionStorage.getItem("loggedInAddress");
+
+    if (storedConnectedAddress) {
+      setConnectedAddress(storedConnectedAddress);
+    }
+
+    if (storedLoggedInAddress) {
+      setLoggedInAddress(storedLoggedInAddress);
+    }
+  };
+
+  const connectWallet = async () => {
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      try {
+        const accounts = await provider.send("eth_requestAccounts", []);
+        setConnectedAddress(accounts[0]);
+        sessionStorage.setItem("connectedAddress", accounts[0]);
+      } catch (error) {
+        console.error("Wallet connection failed: ", error);
+      }
+    } else {
+      console.error("MetaMask not installed");
+    }
+  };
+
+  const signInWithEthereum = async () => {
+    if (connectedAddress) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const message = `Sign this message to authenticate with address: ${connectedAddress}`;
+      try {
+        const signature = await signer.signMessage(message);
+        console.log("Signature:", signature);
+
+        sessionStorage.setItem("loggedInAddress", connectedAddress);
+        setLoggedInAddress(connectedAddress);
+        console.log("User signed in, session updated");
+      } catch (error) {
+        console.error("SIWE failed:", error);
+      }
+    }
+  };
+
+  const signOut = () => {
+    sessionStorage.removeItem("loggedInAddress");
+    sessionStorage.removeItem("connectedAddress");
+    console.log("User signed out");
+  };
 
   useEffect(() => {
-    const fetchMsg = async () => {
-      const msg = await dbg();
-      console.log(msg);
-    };
-    fetchMsg();
+    loadSession();
   }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div>Hello World</div>
+      {connectedAddress ? (
+        <div>
+          <p>Connected address: {connectedAddress}</p>
+          {loggedInAddress ? (
+            <button onClick={signOut}>Sign Out</button>
+          ) : (
+            <button onClick={signInWithEthereum}>Sign In</button>
+          )}
+        </div>
+      ) : (
+        <button onClick={connectWallet}>Connect Wallet</button>
+      )}
     </>
   );
 }
