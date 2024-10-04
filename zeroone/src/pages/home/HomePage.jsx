@@ -1,3 +1,9 @@
+import VerifyButton from "../../components/worldcoin/verifyButton";
+
 export default function HomePage() {
-  return <div></div>;
+  return (
+    <div>
+      <VerifyButton />
+    </div>
+  );
 }
