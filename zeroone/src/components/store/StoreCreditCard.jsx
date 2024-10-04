@@ -32,7 +32,7 @@ export default function StoreCreditCard({
             width: "200px",
             height: "200px",
           }}
-          src="src/assets/store/store-placeholder.jpg"
+          src={image}
         />
       </Box>
       <Typography

@@ -49,8 +49,8 @@ export default function StoreArtistCard({ togglePurchaseModal }) {
           onClick={togglePurchaseModal}
           sx={{
             // mr: 2,
-            backgroundColor: "#E8DEF8",
-            color: "#000",
+            backgroundColor: "#333",
+            color: "#fff",
             fontWeight: "bold",
             px: 6,
             py: 1,

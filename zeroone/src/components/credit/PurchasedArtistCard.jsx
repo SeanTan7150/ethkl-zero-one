@@ -84,8 +84,8 @@ export default function PurchasedArtistCard() {
         variant="contained"
         color="primary"
         sx={{
-          backgroundColor: "#E8DEF8",
-          color: "#000",
+          backgroundColor: "#333",
+          color: "#fff",
           fontWeight: "bold",
           px: 6,
           py: 1,
