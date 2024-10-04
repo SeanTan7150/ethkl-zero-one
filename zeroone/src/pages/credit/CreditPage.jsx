@@ -1,26 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types";
-// import { PurchasedArtistCard } from "..";
 import { PurchasedArtistCard } from "../../components";
 
 import {
   Box,
   Tabs,
   Tab,
-  Typography,
-  Avatar,
   Button,
-  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  Card,
-  CardContent,
-  IconButton,
 } from "@mui/material";
+
+function createData(name, transaction, timestamp, amount, credit, remaning) {
+  return { name, transaction, timestamp, amount, credit, remaning };
+}
+
+const rows = [
+  createData(
+    "Justin Bieber",
+    "0x69e75a2346ae86c1c70f91216e464811a99ed87f",
+    "22/11/24 14:00",
+    "0.0004 ETH",
+    3,
+    "Completed"
+  ),
+  // createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
+  // createData("Eclair", 262, 16.0, 24, 6.0),
+  // createData("Cupcake", 305, 3.7, 67, 4.3),
+  // createData("Gingerbread", 356, 16.0, 49, 3.9),
+];
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -128,6 +141,44 @@ function PurchaseArtistTab() {
   );
 }
 
+function PurchaseHistoryTab() {
+  return (
+    <>
+      <TableContainer component={Box}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Artist</TableCell>
+              <TableCell align="right">Txn Hash</TableCell>
+              <TableCell align="right">Timestamp</TableCell>
+              <TableCell align="right">Amount</TableCell>
+              <TableCell align="right">Credit</TableCell>
+              <TableCell align="right">Remaining</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow
+                key={row.name}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.name}
+                </TableCell>
+                <TableCell align="right">{row.transaction}</TableCell>
+                <TableCell align="right">{row.timestamp}</TableCell>
+                <TableCell align="right">{row.amount}</TableCell>
+                <TableCell align="right">{row.credit}</TableCell>
+                <TableCell align="right">{row.remaning}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
+  );
+}
+
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
@@ -176,7 +227,8 @@ export default function CreditPage() {
             <PurchaseArtistTab />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            Item Two
+            {/* Item Two */}
+            <PurchaseHistoryTab />
           </CustomTabPanel>
         </Box>
       </Box>
