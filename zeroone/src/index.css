@@ -2,10 +2,15 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  height: 100%;
+  width: 100%;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* color: rgba(255, 255, 255, 0.87); */
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.87);
+  margin: 0px;
+  padding: 0rem;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,9 +18,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  height: 100%;
+  width: 100%;
+}
+
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #000;
+  /* color: #646cff; */
   text-decoration: inherit;
 }
 a:hover {
@@ -24,10 +35,10 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  /* display: flex; */
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  /* min-width: 320px;
+  min-height: 100vh; */
 }
 
 h1 {
@@ -52,6 +63,11 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.router-nav-link{
+  color: #000;
+  text-decoration: none;
 }
 
 @media (prefers-color-scheme: light) {
