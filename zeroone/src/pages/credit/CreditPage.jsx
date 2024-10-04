@@ -78,8 +78,9 @@ function PurchaseArtistTab() {
           color="primary"
           sx={{
             mr: 2,
-            backgroundColor: "#333",
-            color: "#fff",
+            backgroundColor: "#fff",
+            border: "2px solid #333",
+            color: "#000",
             fontWeight: "bold",
             px: 6,
             py: 1,
@@ -93,8 +94,9 @@ function PurchaseArtistTab() {
           color="primary"
           sx={{
             mr: 2,
-            backgroundColor: "#333",
-            color: "#fff",
+            backgroundColor: "#fff",
+            border: "2px solid #333",
+            color: "#000",
             fontWeight: "bold",
             px: 6,
             py: 1,
@@ -108,8 +110,9 @@ function PurchaseArtistTab() {
           color="primary"
           sx={{
             mr: 2,
-            backgroundColor: "#333",
-            color: "#fff",
+            backgroundColor: "#fff",
+            border: "2px solid #333",
+            color: "#000",
             fontWeight: "bold",
             px: 6,
             py: 1,

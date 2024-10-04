@@ -67,7 +67,7 @@ export default function ReplyMessage({
         style={{
           minWidth: "200px",
           padding: "15px 25px",
-          backgroundColor: "black",
+          backgroundColor: "#333",
           color: "white",
           maxWidth: "600px",
           alignSelf: "start",
