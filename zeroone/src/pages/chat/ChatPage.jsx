@@ -168,93 +168,11 @@ export default function ChatPage() {
             flexDirection: "column",
           }}
         >
-          {/* <Paper
-            style={{
-              padding: "15px 25px",
-              marginBottom: 20,
-              minWidth: "200px",
-              maxWidth: "600px",
-              alignSelf: "end",
-              borderRadius: "50px",
-            }}
-          >
-            <Typography
-              variant="body1"
-              style={{
-                textAlign: "start",
-              }}
-            >
-              Message 1
-            </Typography>
-          </Paper> */}
           <SenderMessage message="This is the content" />
           <ReplyMessage
             message="This is the content"
             replyMessage="This is the message replied to"
           />
-          {/* <Box
-            style={{
-              minWidth: "200px",
-              maxWidth: "600px",
-              alignSelf: "start",
-            }}
-          >
-            <Typography
-              style={{
-                textAlign: "start",
-                fontWeight: "bold",
-                marginBottom: "1rem",
-              }}
-            >
-              Replied to
-            </Typography>
-            <Box
-              style={{
-                borderLeft: "2px solid #000",
-                paddingLeft: "1rem",
-              }}
-            >
-              <Paper
-                style={{
-                  padding: "15px 25px",
-                  marginBottom: 20,
-                  minWidth: "200px",
-                  maxWidth: "inherit",
-                  alignSelf: "end",
-                  borderRadius: "50px",
-                }}
-              >
-                <Typography
-                  variant="body1"
-                  style={{
-                    textAlign: "start",
-                  }}
-                >
-                  Message 1
-                </Typography>
-              </Paper>
-            </Box>
-            <Paper
-              style={{
-                minWidth: "200px",
-                padding: "15px 25px",
-                backgroundColor: "black",
-                color: "white",
-                maxWidth: "600px",
-                alignSelf: "start",
-                borderRadius: "50px",
-              }}
-            >
-              <Typography
-                variant="body1"
-                style={{
-                  textAlign: "start",
-                }}
-              >
-                Reply 1
-              </Typography>
-            </Paper>
-          </Box> */}
         </div>
         <Paper
           style={{

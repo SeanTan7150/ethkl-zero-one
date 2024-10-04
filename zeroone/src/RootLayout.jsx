@@ -55,7 +55,15 @@ export default function RootLayout() {
   const [open, setOpen] = useState(false);
 
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        // display: "flex",
+        // flexDirection: "column",
+        // justifyContent: "stretch",
+      }}
+    >
       <CustomAppBar
         toggleDrawer={() => {
           console.log(open);
@@ -70,17 +78,22 @@ export default function RootLayout() {
       />
       <Box
         sx={{
-          // backgroundColor: "#000",
-          // borderRadius: 8,
-          // flexGrow: 2,
-          height: "100%",
-          // padding: "2rem 2rem 3rem 3rem",
-          // backgroundColor: "#fff",
+          height: "100vh",
+
           backgroundColor: "#f0f2f5",
         }}
       >
-        {/* Top Section */}
-        {/* <div
+        <Outlet />
+      </Box>
+    </Box>
+  );
+}
+
+{
+  /* Top Section */
+}
+{
+  /* <div
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -116,9 +129,5 @@ export default function RootLayout() {
               inputProps={{ "aria-label": "search" }}
             />
           </Search>
-        </div> */}
-        <Outlet />
-      </Box>
-    </Box>
-  );
+        </div> */
 }

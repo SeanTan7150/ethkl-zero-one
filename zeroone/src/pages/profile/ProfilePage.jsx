@@ -113,7 +113,7 @@ export default function ProfilePage() {
             </Box>
             <Typography
               variant="caption"
-              sx={{ wordBreak: "break-all", mb: 1 }}
+              sx={{ wordBreak: "break-all", mb: 1, fontWeight: "bold" }}
             >
               0x69e75a2346ae86c1c70f91216e464811a99ed87f
             </Typography>

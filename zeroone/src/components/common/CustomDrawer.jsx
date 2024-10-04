@@ -75,7 +75,7 @@ export default function CustomDrawer({ open, toggleDrawer }) {
           }}
         ></div>
         <List>
-          {["Discover", "Chat", "Credit", "Profile"].map((text) => (
+          {["Discover", "Chat", "Credit", "Store", "Profile"].map((text) => (
             <NavLink
               key={text}
               to={sidebarList[text].url}
