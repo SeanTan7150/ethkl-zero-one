@@ -72,4 +72,21 @@ router.get("/getUser/:address", async (req, res) => {
   }
 });
 
+// Get all users where isArtist is true
+router.get("/getArtists", async (req, res) => {
+  try {
+    const artists = await User.find({ is_artist: true });
+
+    if (artists.length === 0) {
+      return res.status(404).json({ message: "No artists found" });
+    }
+
+    return res.status(200).json(artists);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Error fetching artists", details: error.message });
+  }
+});
+
 export default router;

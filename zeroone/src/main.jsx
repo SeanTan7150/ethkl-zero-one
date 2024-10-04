@@ -11,6 +11,7 @@ import {
   ChatPage,
   StorePage,
   LandingPage,
+  TestPage,
 } from "./pages/index.js";
 
 import {
@@ -52,16 +53,15 @@ const router = createBrowserRouter([
         path: "/landing-page",
         element: <LandingPage />,
       },
+      { path: "/test", element: <TestPage /> },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <ContractContextProvider>
-      {/* <App />
-       */}
-      <RouterProvider router={router} />
-    </ContractContextProvider>
-  </StrictMode>
+  <ContractContextProvider>
+    {/* <App />
+     */}
+    <RouterProvider router={router} />
+  </ContractContextProvider>
 );

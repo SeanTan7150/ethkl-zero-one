@@ -28,11 +28,21 @@ export const ContractContextProvider = ({ children }) => {
         const signer = provider.getSigner();
         const contractWithSigner = contract.connect(signer);
 
+        const price1InWei = ethers.utils.parseEther(
+          priceForOneCredit.toString()
+        );
+        const price3InWei = ethers.utils.parseEther(
+          priceForThreeCredits.toString()
+        );
+        const price5InWei = ethers.utils.parseEther(
+          priceForFiveCredits.toString()
+        );
+
         const tx = await contractWithSigner.registerNewArtist(
           name,
-          priceForOneCredit,
-          priceForThreeCredits,
-          priceForFiveCredits
+          price1InWei,
+          price3InWei,
+          price5InWei
         );
         console.log("Transaction sent: ", tx.hash);
         const receipt = await tx.wait();
@@ -43,8 +53,112 @@ export const ContractContextProvider = ({ children }) => {
     }
   };
 
+  const artistSetPrice = async (
+    priceForOneCredit,
+    priceForThreeCredits,
+    priceForFiveCredits
+  ) => {
+    try {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          provider
+        );
+        const signer = provider.getSigner();
+        const contractWithSigner = contract.connect(signer);
+
+        const price1InWei = ethers.utils.parseEther(
+          priceForOneCredit.toString()
+        );
+        const price3InWei = ethers.utils.parseEther(
+          priceForThreeCredits.toString()
+        );
+        const price5InWei = ethers.utils.parseEther(
+          priceForFiveCredits.toString()
+        );
+
+        const tx = await contractWithSigner.artistSetPrice(
+          price1InWei,
+          price3InWei,
+          price5InWei
+        );
+        console.log("Transaction sent: ", tx.hash);
+        const receipt = await tx.wait();
+        console.log("Transaction successful: ", receipt.transactionHash);
+      }
+    } catch (error) {
+      console.error("Transaction failed: ", error);
+    }
+  };
+
+  const buyCredit = async (
+    artistAddress,
+    creditAmount,
+    creditType,
+    paymentAmount
+  ) => {
+    try {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          provider
+        );
+        const signer = provider.getSigner();
+        const contractWithSigner = contract.connect(signer);
+
+        const amountInWei = ethers.utils.parseEther(paymentAmount.toString());
+
+        const tx = await contractWithSigner.buyCredit(
+          artistAddress,
+          creditAmount,
+          creditType,
+          { value: amountInWei }
+        );
+        console.log("Transaction sent: ", tx.hash);
+        const receipt = await tx.wait();
+        console.log("Transaction successful: ", receipt.transactionHash);
+      }
+    } catch (error) {
+      console.error("Transaction failed: ", error);
+    }
+  };
+
+  const claimRewards = async (pr2ID, numberOfClaims) => {
+    try {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          provider
+        );
+        const signer = provider.getSigner();
+        const contractWithSigner = contract.connect(signer);
+
+        const tx = await contractWithSigner.claimRewards(pr2ID, numberOfClaims);
+        console.log("Transaction sent: ", tx.hash);
+        const receipt = await tx.wait();
+        console.log("Transaction successful: ", receipt.transactionHash);
+      }
+    } catch (error) {
+      console.error("Transaction failed: ", error);
+    }
+  };
+
   return (
-    <ContractContext.Provider value={{ dbg, registerNewArtist }}>
+    <ContractContext.Provider
+      value={{
+        dbg,
+        registerNewArtist,
+        artistSetPrice,
+        buyCredit,
+        claimRewards,
+      }}
+    >
       {children}
     </ContractContext.Provider>
   );
