@@ -51,7 +51,7 @@ export default function CustomDrawer({ open, toggleDrawer }) {
           }}
         >
           <img
-            src="src/assets/sidebar/icon.png"
+            src="public/P2Reach.png"
             style={{
               width: "60px",
               height: "60px",
@@ -65,7 +65,7 @@ export default function CustomDrawer({ open, toggleDrawer }) {
               textAlign: "center",
             }}
           >
-            FARM-E
+            P2Reach
           </Typography>
         </div>
         <Divider />

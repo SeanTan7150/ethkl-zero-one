@@ -10,13 +10,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 export default function CustomAppBar({ toggleDrawer }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        position="static"
-        sx={{
-          backgroundColor: "#000",
-        }}
-      >
-        <Toolbar>
+
+      <AppBar position="static">
+        <Toolbar style={{ backgroundColor: "#7c5bca" }}>
           <IconButton
             size="large"
             edge="start"
@@ -29,9 +25,11 @@ export default function CustomAppBar({ toggleDrawer }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
-          </Typography>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1 }}
+          ></Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
