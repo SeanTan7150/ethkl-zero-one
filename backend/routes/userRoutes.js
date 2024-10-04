@@ -53,4 +53,23 @@ router.put("/updateUser/:address", async (req, res) => {
   }
 });
 
+// Get User Details API
+router.get("/getUser/:address", async (req, res) => {
+  const { address } = req.params;
+
+  try {
+    const user = await User.findOne({ address });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Error fetching user details", details: error.message });
+  }
+});
+
 export default router;

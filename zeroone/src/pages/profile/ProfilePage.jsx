@@ -6,63 +6,67 @@ import {
   Button,
   Grid,
   Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
   Card,
   CardContent,
   IconButton,
 } from "@mui/material";
 import {
-  Explore as DiscoverIcon,
-  Chat as ChatIcon,
-  FavoriteBorder as CreditIcon,
-  Person as ProfileIcon,
-  History as HistoryIcon,
   Verified as VerifiedIcon,
-  Add as AddIcon,
   Twitter as TwitterIcon,
   Facebook as FacebookIcon,
   Instagram as InstagramIcon,
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 import VerifiedButton from "../../components/worldcoin/VerifyButton";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 export default function ProfilePage() {
-  const [loginAddress, setLoginAddress] = useLocalStorage("loginAddress", null);
-  const [worldcoinVerified, setWorldcoinVerified] = React.useState(true);
+  const [userData, setUserData] = React.useState(null);
+  const loggedInAddress = localStorage.getItem("loggedInAddress") ?? "";
+
+  React.useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5001/api/user/getUser/${loggedInAddress}`
+        );
+        if (!res.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        const data = await res.json();
+        setUserData(data); // Set the user data state
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (loggedInAddress !== "") {
+      // Fetch user data only if loggedInAddress is not empty
+      fetchUserData();
+    }
+  }, [loggedInAddress]);
 
   return (
     <Box
       sx={{
         flex: 1,
         p: 2,
-        maxWidth: 800,
+        maxWidth: 1280,
         marginLeft: "auto",
         marginRight: "auto",
-        // backgroundColor: "#fff",
       }}
     >
-      {/* <Typography variant="h4" sx={{ mb: 2 }}>
-        Justin Bieber <VerifiedIcon color="primary" />
-      </Typography> */}
-
       <Paper
         elevation={0}
         sx={{ p: 3, mb: 3, backgroundColor: "#fff", borderRadius: "8px" }}
       >
-        <Box
-          style={{
-            display: "flex",
-          }}
-        >
-          {/* Avatar */}
+        <Box style={{ display: "flex", alignItems: "center" }}>
           <Box>
             <Avatar
-              src="/path-to-avatar.jpg"
+              src={
+                userData && userData.profile_pic_url
+                  ? userData.profile_pic_url
+                  : ""
+              }
               style={{
                 width: "120px",
                 height: "120px",
@@ -72,7 +76,6 @@ export default function ProfilePage() {
             />
           </Box>
 
-          {/* Information */}
           <Box
             style={{
               display: "flex",
@@ -86,19 +89,18 @@ export default function ProfilePage() {
                 display: "flex",
                 alignItems: "center",
               }}
-              sx={{
-                mb: 1,
-              }}
+              sx={{ mb: 1 }}
             >
-              <Typography
-                variant="h5"
-                style={{
-                  marginRight: 10,
-                }}
-              >
-                Justin Bieber <VerifiedIcon color="primary" fontSize="small" />
+              <Typography variant="h5" style={{ marginRight: 10 }}>
+                {userData && userData.username ? userData.username : "Username"}
+
+                {userData && userData.is_artist === true ? (
+                  <VerifiedIcon color="primary" fontSize="small" />
+                ) : (
+                  <></>
+                )}
               </Typography>
-              {worldcoinVerified ? (
+              {userData && userData.worldcoin_status ? (
                 <Box
                   style={{
                     backgroundColor: "#E6E0E9",
@@ -124,10 +126,15 @@ export default function ProfilePage() {
               variant="caption"
               sx={{ wordBreak: "break-all", mb: 1, fontWeight: "bold" }}
             >
-              0x69e75a2346ae86c1c70f91216e464811a99ed87f
+              {loggedInAddress}
             </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              Add a bio to introduce yourself
+            <Typography
+              variant="body2"
+              sx={{ mb: 1, mr: 4, textAlign: "left" }}
+            >
+              {userData && userData.bio
+                ? userData.bio
+                : "This user has no bio."}
             </Typography>
             <Box sx={{ mb: 1 }}>
               <IconButton size="small">
@@ -139,13 +146,9 @@ export default function ProfilePage() {
               <IconButton size="small">
                 <InstagramIcon />
               </IconButton>
-              {/* <Button startIcon={<AddIcon />} variant="outlined" size="small">
-                Add
-              </Button> */}
             </Box>
           </Box>
 
-          {/* Net Worth */}
           <Box style={{}}>
             <Typography variant="h4">$906,211</Typography>
           </Box>
@@ -176,12 +179,7 @@ export default function ProfilePage() {
           </Grid>
         </Grid>
 
-        {/* Action  */}
-        <Box
-          sx={{
-            mb: 3,
-          }}
-        >
+        <Box sx={{ mb: 3 }}>
           <Button
             variant="contained"
             color="primary"
@@ -236,11 +234,7 @@ export default function ProfilePage() {
             paddingLeft: "0px",
           }}
         >
-          <CardContent
-            sx={{
-              paddingLeft: "0px",
-            }}
-          >
+          <CardContent sx={{ paddingLeft: "0px" }}>
             <Box sx={{ display: "flex", alignItems: "start", mb: 2 }}>
               <Avatar src="/path-to-justin-bieber-avatar.jpg" sx={{ mr: 2 }} />
               <Box
@@ -264,40 +258,18 @@ export default function ProfilePage() {
               </IconButton>
             </Box>
             <Box sx={{ display: "flex" }}>
-              <Typography
-                variant="caption"
-                sx={{
-                  mr: 2,
-                }}
-              >
+              <Typography variant="caption" sx={{ mr: 2 }}>
                 💬 21
               </Typography>
-              <Typography
-                variant="caption"
-                sx={{
-                  mr: 2,
-                }}
-              >
+              <Typography variant="caption" sx={{ mr: 2 }}>
                 🔁 31
               </Typography>
-              <Typography
-                variant="caption"
-                sx={{
-                  mr: 2,
-                }}
-              >
+              <Typography variant="caption" sx={{ mr: 2 }}>
                 ❤️ 4k
               </Typography>
             </Box>
           </CardContent>
         </Card>
-
-        {/* <Box sx={{ mt: 3, textAlign: "center" }}>
-          <Typography variant="body2">Or</Typography>
-          <Typography variant="body1">
-            User have not post any thing yet
-          </Typography>
-        </Box> */}
       </Paper>
     </Box>
   );

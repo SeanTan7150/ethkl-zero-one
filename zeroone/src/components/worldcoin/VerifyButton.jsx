@@ -2,7 +2,6 @@ import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
 
 const handleVerify = async (proof) => {
   const res = await fetch("http://localhost:5001/api/auth/verify", {
-    // Change the URL to point to your backend
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -13,16 +12,37 @@ const handleVerify = async (proof) => {
   if (!res.ok) {
     throw new Error("Verification failed."); // IDKit will display the error message to the user in the modal
   }
+
+  return res.json(); // Return the response for further processing
 };
 
-const onSuccess = () => {
-  // TODO: Change the verify status to true
-  console.log("Verification successful");
+const onSuccess = async () => {
+  const loggedInAddress = sessionStorage.getItem("loggedInAddress") ?? "";
 
-  //   window.alert(
-  //     `Successfully verified with World ID!
-  // Your nullifier hash is: ` + result.nullifier_hash
-  //   );
+  try {
+    const res = await fetch(
+      `http://localhost:5001/api/user/updateUser/${loggedInAddress}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ worldcoin_status: true }), // Update worldCoinStatus to true
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to update user profile.");
+    }
+
+    const updatedUser = await res.json();
+    console.log("User profile updated:", updatedUser);
+
+    // Refresh the page
+    window.location.reload();
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+  }
 };
 
 export default function VerifyButton() {
@@ -35,12 +55,10 @@ export default function VerifyButton() {
       verification_level={VerificationLevel.Orb}
     >
       {({ open }) => (
-        // This is the button that will open the IDKit modal
         <button style={{ fontSize: "12px" }} onClick={open}>
           Verify with World ID
         </button>
       )}
-      {}
     </IDKitWidget>
   );
 }
