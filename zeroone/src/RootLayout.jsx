@@ -9,6 +9,7 @@ import InputBase from "@mui/material/InputBase";
 import { Outlet, useLocation } from "react-router-dom";
 import { matchPathName } from "./utils";
 import { useState } from "react";
+import { ModalContext } from "./context/useModalContext";
 
 // const Search = styled("div")(({ theme }) => ({
 //   position: "relative",
@@ -53,39 +54,49 @@ export default function RootLayout() {
   const location = useLocation();
   const breadcrumb = matchPathName(location.pathname);
   const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "100%",
-        // display: "flex",
-        // flexDirection: "column",
-        // justifyContent: "stretch",
+    <ModalContext.Provider
+      value={{
+        modalOpen,
+        setModalOpen,
       }}
     >
-      <CustomAppBar
-        toggleDrawer={() => {
-          console.log(open);
-          setOpen(!open);
-        }}
-      />
-      <CustomDrawer
-        open={open}
-        toggleDrawer={() => {
-          setOpen(false);
-        }}
-      />
       <Box
+        className={`
+        ${modalOpen ? "opacity-half" : "opacity-full"}`}
         sx={{
-          height: "100vh",
-
-          backgroundColor: "#f0f2f5",
+          width: "100%",
+          height: "100%",
+          // display: "flex",
+          // flexDirection: "column",
+          // justifyContent: "stretch",
         }}
       >
-        <Outlet />
+        <CustomAppBar
+          toggleDrawer={() => {
+            console.log(open);
+            setOpen(!open);
+          }}
+        />
+        <CustomDrawer
+          open={open}
+          toggleDrawer={() => {
+            setOpen(false);
+          }}
+        />
+        <Box
+          sx={{
+            height: "100%",
+
+            backgroundColor: "#f0f2f5",
+          }}
+        >
+          <Outlet />
+        </Box>
       </Box>
-    </Box>
+    </ModalContext.Provider>
   );
 }
 

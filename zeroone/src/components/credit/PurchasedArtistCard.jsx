@@ -55,10 +55,30 @@ export default function PurchasedArtistCard() {
           // fontWeight: "bold",
           textAlign: "start",
           fontSize: "14px",
+          mb: 1,
+        }}
+      >
+        Slow Credit: 5
+      </Typography>
+      <Typography
+        sx={{
+          // fontWeight: "bold",
+          textAlign: "start",
+          fontSize: "14px",
+          mb: 1,
+        }}
+      >
+        Average Credit: 5
+      </Typography>
+      <Typography
+        sx={{
+          // fontWeight: "bold",
+          textAlign: "start",
+          fontSize: "14px",
           mb: 2,
         }}
       >
-        Remianing Credit: 5
+        Fast Credit: 5
       </Typography>
       <Button
         variant="contained"

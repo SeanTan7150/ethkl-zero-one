@@ -8,12 +8,12 @@ import {
   Button,
 } from "@mui/material";
 
-export default function StoreArtistCard() {
+export default function StoreArtistCard({ togglePurchaseModal }) {
   return (
     <Card
       sx={{
-        minWidth: 330,
-        maxWidth: 380,
+        minWidth: 320,
+        maxWidth: 320,
         boxShadow: " rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;",
         borderRadius: "10px",
         // mb: 5,
@@ -23,7 +23,7 @@ export default function StoreArtistCard() {
       <CardMedia
         component="img"
         alt="green iguana"
-        height="300"
+        height="230"
         image="src/assets/store/store-placeholder.jpg"
       />
       <CardContent>
@@ -46,6 +46,7 @@ export default function StoreArtistCard() {
         <Button
           variant="contained"
           color="primary"
+          onClick={togglePurchaseModal}
           sx={{
             // mr: 2,
             backgroundColor: "#E8DEF8",
