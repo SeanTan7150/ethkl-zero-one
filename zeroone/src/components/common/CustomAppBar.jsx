@@ -24,11 +24,11 @@ export default function CustomAppBar({ toggleDrawer }) {
           >
             <MenuIcon />
           </IconButton>
-          {/* <Typography
+          <Typography
             variant="h6"
             component="div"
             sx={{ flexGrow: 1 }}
-          ></Typography> */}
+          ></Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
