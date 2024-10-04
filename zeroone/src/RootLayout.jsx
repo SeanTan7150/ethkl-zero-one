@@ -75,7 +75,8 @@ export default function RootLayout() {
           // flexGrow: 2,
           height: "100%",
           // padding: "2rem 2rem 3rem 3rem",
-          backgroundColor: "#fff",
+          // backgroundColor: "#fff",
+          backgroundColor: "#f0f2f5",
         }}
       >
         {/* Top Section */}
