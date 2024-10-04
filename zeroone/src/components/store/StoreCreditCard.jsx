@@ -5,6 +5,7 @@ export default function StoreCreditCard({
   onPressCard,
   label,
   description,
+  image,
 }) {
   return (
     <Box

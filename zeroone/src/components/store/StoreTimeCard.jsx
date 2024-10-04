@@ -5,6 +5,7 @@ export default function StoreTimeCard({
   onPressCard,
   label,
   description,
+  image,
 }) {
   return (
     <Box
@@ -31,7 +32,7 @@ export default function StoreTimeCard({
             width: "200px",
             height: "200px",
           }}
-          src="src/assets/store/store-placeholder.jpg"
+          src={image}
         />
       </Box>
       <Typography

@@ -1,4 +1,6 @@
 import React, { useState, useContext } from "react";
+import { styled } from "@mui/material/styles";
+
 import {
   Box,
   Drawer,
@@ -26,6 +28,16 @@ import {
   Button,
   Grid2,
 } from "@mui/material";
+import PropTypes from "prop-types";
+import SettingsIcon from "@mui/icons-material/Settings";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import VideoLabelIcon from "@mui/icons-material/VideoLabel";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import StepConnector, {
+  stepConnectorClasses,
+} from "@mui/material/StepConnector";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   StoreArtistCard,
@@ -33,6 +45,102 @@ import {
   StoreTimeCard,
 } from "../../components";
 import { ModalContext } from "../../context/useModalContext";
+
+const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+    top: 22,
+  },
+  [`&.${stepConnectorClasses.active}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+        "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)",
+    },
+  },
+  [`&.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+        "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)",
+    },
+  },
+  [`& .${stepConnectorClasses.line}`]: {
+    height: 3,
+    border: 0,
+    backgroundColor: "#eaeaf0",
+    borderRadius: 1,
+    ...theme.applyStyles("dark", {
+      backgroundColor: theme.palette.grey[800],
+    }),
+  },
+}));
+
+const ColorlibStepIconRoot = styled("div")(({ theme }) => ({
+  backgroundColor: "#ccc",
+  zIndex: 1,
+  color: "#fff",
+  width: 50,
+  height: 50,
+  display: "flex",
+  borderRadius: "50%",
+  justifyContent: "center",
+  alignItems: "center",
+  ...theme.applyStyles("dark", {
+    backgroundColor: theme.palette.grey[700],
+  }),
+  variants: [
+    {
+      props: ({ ownerState }) => ownerState.active,
+      style: {
+        backgroundImage:
+          "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+        boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+      },
+    },
+    {
+      props: ({ ownerState }) => ownerState.completed,
+      style: {
+        backgroundImage:
+          "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+      },
+    },
+  ],
+}));
+
+function ColorlibStepIcon(props) {
+  const { active, completed, className } = props;
+
+  const icons = {
+    1: <MonetizationOnOutlinedIcon />,
+    2: <AccessTimeIcon />,
+    3: <ShoppingCartOutlinedIcon />,
+  };
+
+  return (
+    <ColorlibStepIconRoot
+      ownerState={{ completed, active }}
+      className={className}
+    >
+      {icons[String(props.icon)]}
+    </ColorlibStepIconRoot>
+  );
+}
+
+ColorlibStepIcon.propTypes = {
+  /**
+   * Whether this step is active.
+   * @default false
+   */
+  active: PropTypes.bool,
+  className: PropTypes.string,
+  /**
+   * Mark the step as completed. Is passed to child components.
+   * @default false
+   */
+  completed: PropTypes.bool,
+  /**
+   * The label displayed in the step icon.
+   */
+  icon: PropTypes.node,
+};
 
 const steps = ["Credit Amount", "Time to Reach", "Order Summary"];
 
@@ -75,18 +183,21 @@ const timeToReachInfo = [
     description: "Free",
     eth: 0,
     price: 0,
+    image: "src/assets/store/bicycle.jpg",
   },
   {
     label: "Average (~ 2 Days)",
     description: "0.00005 ETH (~$0.16)",
     eth: 0.00005,
     price: 0.16,
+    image: "src/assets/store/myvi.jpg",
   },
   {
     label: "Fast (~ Within 1 Day)",
     description: "0.0001 ETH (~$0.23)",
     eth: 0.0001,
     price: 0.23,
+    image: "src/assets/store/lambo.jpg",
   },
 ];
 
@@ -105,7 +216,8 @@ function TimeToReachComponent({ activeTime, setActiveTime, onSelectTime }) {
         }}
       >
         {timeToReachInfo.map((obj, index) => (
-          <StoreCreditCard
+          <StoreTimeCard
+            image={obj.image}
             key={index}
             isActive={activeTime === index ? true : false}
             label={obj.label}
@@ -294,21 +406,6 @@ export default function StorePage() {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
   };
 
   const handleReset = () => {
@@ -500,6 +597,7 @@ export default function StorePage() {
             <Grid2 item xs={3}>
               <StoreArtistCard
                 togglePurchaseModal={() => {
+                  setActiveStep(0);
                   setModalOpen(!modalOpen);
                 }}
               />
@@ -507,6 +605,7 @@ export default function StorePage() {
             <Grid2 item xs={3}>
               <StoreArtistCard
                 togglePurchaseModal={() => {
+                  setActiveStep(0);
                   setModalOpen(!modalOpen);
                 }}
               />
@@ -546,7 +645,11 @@ export default function StorePage() {
             <Typography>Purchase credit for John Doe</Typography>
           </Box>
 
-          <Stepper activeStep={activeStep}>
+          <Stepper
+            activeStep={activeStep}
+            connector={<ColorlibConnector />}
+            alternativeLabel
+          >
             {steps.map((label, index) => {
               const stepProps = {};
               const labelProps = {};
@@ -560,7 +663,12 @@ export default function StorePage() {
               }
               return (
                 <Step key={label} {...stepProps}>
-                  <StepLabel {...labelProps}>{label}</StepLabel>
+                  <StepLabel
+                    {...labelProps}
+                    StepIconComponent={ColorlibStepIcon}
+                  >
+                    {label}
+                  </StepLabel>
                 </Step>
               );
             })}
