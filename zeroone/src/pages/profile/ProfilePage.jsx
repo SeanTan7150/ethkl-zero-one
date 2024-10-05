@@ -34,10 +34,11 @@ const modalStyle = {
   borderRadius: "10px",
   p: 4,
 };
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Use URLSearchParams to extract the 'address' parameter
   const searchParams = new URLSearchParams(location.search);
@@ -111,6 +112,11 @@ export default function ProfilePage() {
     }
   };
 
+  const handleChatDirect = () => {
+    // Redirect to the profile page with the artist's address as a query parameter
+    navigate(`/chat?address=${profileAddress}`);
+  };
+
   return (
     <>
       <Box
@@ -161,7 +167,7 @@ export default function ProfilePage() {
                 <Typography variant="h5" style={{ marginRight: 10 }}>
                   {userData && userData.username
                     ? userData.username
-                    : "Username"}
+                    : "Unknown User"}
 
                   {userData && userData.is_artist === true ? (
                     <VerifiedIcon color="primary" fontSize="small" />
@@ -216,7 +222,7 @@ export default function ProfilePage() {
                 ) : (
                   <>
                     {profileAddress ==
-                      sessionStorage.getItem("loggedInAddress") ?? (
+                      sessionStorage.getItem("loggedInAddress") && (
                       <VerifiedButton />
                     )}
                   </>
@@ -307,6 +313,9 @@ export default function ProfilePage() {
                   py: 1,
                   borderRadius: "10px",
                 }}
+                onClick={() => {
+                  handleChatDirect();
+                }}
               >
                 Message
               </Button>
@@ -333,46 +342,56 @@ export default function ProfilePage() {
               boxShadow: "none",
               maxWidth: "600px",
               paddingLeft: "0px",
+              textAlign: "left",
             }}
           >
-            <CardContent sx={{ paddingLeft: "0px" }}>
-              <Box sx={{ display: "flex", alignItems: "start", mb: 2 }}>
-                <Avatar
-                  src="/path-to-justin-bieber-avatar.jpg"
-                  sx={{ mr: 2 }}
-                />
-                <Box
-                  sx={{
-                    flexGrow: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "start",
-                  }}
-                >
-                  <Typography variant="subtitle1">
-                    Justin Bieber{" "}
-                    <VerifiedIcon color="primary" fontSize="small" />
+            {profileAddress === "0x69e75a2346ae86c1c70f91216e464811a99ed87f" ? (
+              <CardContent sx={{ paddingLeft: "0px" }}>
+                <Box sx={{ display: "flex", alignItems: "start", mb: 2 }}>
+                  <Avatar
+                    src="/path-to-justin-bieber-avatar.jpg"
+                    sx={{ mr: 2 }}
+                  />
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "start",
+                    }}
+                  >
+                    <Typography variant="subtitle1">
+                      Justin Bieber{" "}
+                      <VerifiedIcon color="primary" fontSize="small" />
+                    </Typography>
+                    <Typography variant="body2">
+                      New album is coming out. Check out my spotify now!!
+                    </Typography>
+                  </Box>
+                  <IconButton>
+                    <MoreVertIcon />
+                  </IconButton>
+                </Box>
+                <Box sx={{ display: "flex" }}>
+                  <Typography variant="caption" sx={{ mr: 2 }}>
+                    💬 21
                   </Typography>
-                  <Typography variant="body2">
-                    New album is coming out. Check out my spotify now!!
+                  <Typography variant="caption" sx={{ mr: 2 }}>
+                    🔁 31
+                  </Typography>
+                  <Typography variant="caption" sx={{ mr: 2 }}>
+                    ❤️ 4k
                   </Typography>
                 </Box>
-                <IconButton>
-                  <MoreVertIcon />
-                </IconButton>
-              </Box>
-              <Box sx={{ display: "flex" }}>
-                <Typography variant="caption" sx={{ mr: 2 }}>
-                  💬 21
-                </Typography>
-                <Typography variant="caption" sx={{ mr: 2 }}>
-                  🔁 31
-                </Typography>
-                <Typography variant="caption" sx={{ mr: 2 }}>
-                  ❤️ 4k
-                </Typography>
-              </Box>
-            </CardContent>
+              </CardContent>
+            ) : (
+              <Typography
+                variant="caption"
+                sx={{ mt: 5, textAlign: "left", width: "100%" }}
+              >
+                User has not posted any threads yet.
+              </Typography>
+            )}
           </Card>
         </Paper>
       </Box>

@@ -75,6 +75,7 @@ export default function CustomAppBar({ toggleDrawer }) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const message = `Sign this message to authenticate with address: ${connectedAddress}`;
+
       try {
         const signature = await signer.signMessage(message);
         console.log("Signature:", signature);
@@ -83,28 +84,31 @@ export default function CustomAppBar({ toggleDrawer }) {
         setLoggedInAddress(connectedAddress);
         console.log("User signed in, session updated");
 
-        // check off chain user existence
+        // Check off-chain user existence
         try {
           const res = await fetch(
             `http://localhost:5001/api/user/getUser/${sessionStorage.getItem(
               "loggedInAddress"
             )}`
           );
-          if (!res.ok) {
+
+          // Handle non-404 errors (other types of errors)
+          if (!res.ok && res.status !== 404) {
             throw new Error("Failed to fetch user");
           }
-          const data = await res.json();
 
-          if (data.error) {
+          if (res.status === 404) {
+            // User not found, trigger modal to create profile
             setModalOpen(true);
-            // console.log("jonathan not found");
-            // console.error("Error fetching user:", data.error);
+            console.log("User not found, opening modal to create profile");
           } else {
+            // User found, proceed with login flow
+            const data = await res.json();
             console.log("User found:", data);
             navigate("/home");
           }
         } catch (error) {
-          console.error(error);
+          console.error("Error fetching user:", error);
         }
       } catch (error) {
         console.error("SIWE failed:", error);
@@ -127,7 +131,7 @@ export default function CustomAppBar({ toggleDrawer }) {
       });
 
       if (!res.ok) {
-        throw new Error(`Error: ${response.status}`);
+        throw new Error(`Error: ${res.status}`);
       }
 
       const data = await res.json();

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { ModalContext } from "../../context/useModalContext";
 
 import { creditInfo, timeToReachInfo } from "../../types";
@@ -28,10 +28,14 @@ import SendIcon from "@mui/icons-material/Send";
 import { SenderMessage, ReplyMessage, PurchaseModal } from "../../components";
 
 export default function ChatPage() {
+  const loggedInAddress = sessionStorage.getItem("loggedInAddress");
+
   const { modalOpen, setModalOpen } = useContext(ModalContext);
 
   const [message, setMessage] = React.useState("");
   const [activeContact, setActiveContact] = React.useState(0);
+  const [conversations, setConversations] = useState([]);
+  const [userData, setUserData] = useState(null);
   const [activeCard, setActiveCard] = useState(0);
   // Selected Credit Object
   const [selectedCredit, setSelectedCredit] = useState(creditInfo[0]);
@@ -39,6 +43,75 @@ export default function ChatPage() {
   const [activeTime, setActiveTime] = useState(0);
   // Selected Time Object
   const [selectedTime, setSelectedTime] = useState(timeToReachInfo[0]);
+
+  // Get the address from query parameters
+  const params = new URLSearchParams(window.location.search);
+  const profileAddress = params.get("address"); // The address you want to chat with
+
+  // Fetch user data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5001/api/user/getUser/${profileAddress}`
+        );
+        if (!res.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        const data = await res.json();
+        setUserData(data); // Set the user data state
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (
+      profileAddress &&
+      !conversations.some((convo) =>
+        convo.participants.includes(profileAddress)
+      )
+    ) {
+      // Only fetch user data if the address is not found in conversations
+      fetchUserData();
+    }
+  }, [profileAddress, conversations]);
+
+  // If userData exists, map it to the conversations array for display
+  const mappedConversations = userData
+    ? [
+        {
+          address: userData.address,
+          username: userData.username,
+          profile_pic_url: userData.profile_pic_url,
+          bio: userData.bio,
+          // You can add more properties here if needed
+        },
+        ...conversations, // Assuming conversations can have other entries as well
+      ]
+    : conversations;
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/conversation/getConversation/${loggedInAddress}`, // Address in URL
+          {
+            method: "GET",
+          }
+        );
+        const data = await response.json(); // Assuming the response is in JSON format
+        if (data.success) {
+          setConversations(data.conversations);
+        }
+      } catch (error) {
+        console.error("Failed to fetch conversations:", error);
+      }
+    };
+
+    if (loggedInAddress) {
+      fetchConversations();
+    }
+  }, [loggedInAddress]);
 
   const onChangeActiveContact = (index) => {
     setActiveContact(index);
@@ -88,7 +161,12 @@ export default function ChatPage() {
           />
           {/* Contact Panel */}
           <List>
-            {[...Array(7)].map((_, index) => (
+            {mappedConversations.length === 0 && (
+              <Typography variant="h6" style={{ margin: "1rem" }}>
+                No conversations found
+              </Typography>
+            )}
+            {mappedConversations.map((contact, index) => (
               <ListItem
                 className={`
                 list-contact
@@ -112,11 +190,26 @@ export default function ChatPage() {
                 }}
               >
                 <ListItemAvatar>
-                  <Avatar src="/path-to-avatar.jpg" />
+                  <Avatar
+                    src={
+                      contact.profile_pic_url || "/path-to-default-avatar.jpg"
+                    }
+                  />
                 </ListItemAvatar>
                 <ListItemText
-                  primary="John Doe"
+                  primary={
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      {contact.username || "Unknown User"}
+                      {userData?.is_artist && (
+                        <Verified
+                          color="primary"
+                          style={{ marginLeft: 5, width: "auto" }}
+                        />
+                      )}
+                    </Box>
+                  }
                   secondary="lorem ipsum meta"
+                  //{contact.bio || "No bio available"}
                   primaryTypographyProps={{ style: { fontWeight: "bold" } }}
                 />
                 <Typography variant="caption" style={{ marginLeft: "auto" }}>
@@ -146,11 +239,35 @@ export default function ChatPage() {
             }}
           >
             <Toolbar>
-              <Avatar src="/path-to-avatar.jpg" />
-              <Typography variant="h6" style={{ marginLeft: 10 }}>
-                John Doe
-              </Typography>
-              <Verified color="primary" style={{ marginLeft: 5 }} />
+              {/* Use the selected user's profile picture or a default one if not available */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar
+                  src={
+                    userData?.profile_pic_url || "/path-to-default-avatar.jpg"
+                  }
+                />
+                {/* Use the selected user's name or a default name */}
+
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Typography variant="h5" style={{ marginLeft: 10 }}>
+                      {userData?.username || "Unknown User"}
+                    </Typography>
+                    {userData?.is_artist && (
+                      <Verified color="primary" style={{ marginLeft: 5 }} />
+                    )}
+                  </Box>
+                  <Typography variant="body2" style={{ marginLeft: 10 }}>
+                    {userData?.address}
+                  </Typography>
+                </Box>
+              </Box>
               <div
                 style={{
                   marginLeft: "auto",
@@ -158,10 +275,6 @@ export default function ChatPage() {
                   alignItems: "center",
                 }}
               >
-                <Button variant="outlined" style={{ marginRight: 10 }}>
-                  Verify Worldcoin
-                </Button>
-                <Typography variant="body2">0x...123</Typography>
                 <Button
                   variant="outlined"
                   style={{ marginLeft: 10 }}
@@ -172,7 +285,7 @@ export default function ChatPage() {
                   Buy Credit
                 </Button>
                 <Typography variant="body2" style={{ marginLeft: 10 }}>
-                  5 credits available
+                  Remaining: 5 Fast, 10 Slow Credit
                 </Typography>
               </div>
             </Toolbar>

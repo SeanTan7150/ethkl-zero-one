@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 
 // P2R Record schema
 const p2rRecordSchema = new Schema({
-  p2r_id: { type: String, required: true, unique: true },
+  p2rRecordID: { type: String, required: true, unique: true },
   user_address: { type: String, required: true },
   artist_address: { type: String, required: true },
   credit: { type: Number, default: 0, required: true },

@@ -38,7 +38,7 @@ export default function StoreArtistCard({
           component="div"
           sx={{ fontWeight: " bold" }}
         >
-          {username ?? "Username"}
+          {username ?? "Unknown User"}
         </Typography>
         <Typography
           variant="body2"

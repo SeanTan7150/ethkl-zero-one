@@ -5,16 +5,16 @@ const router = express.Router();
 
 // POST API to create a P2R Record
 router.post("/createP2RRecord", async (req, res) => {
-  const { p2r_id, user_address, artist_address, credit, type } = req.body;
+  const { p2rRecordID, user_address, artist_address, credit, type } = req.body;
 
   try {
-    if (!p2r_id || !user_address || !artist_address || !credit || !type) {
+    if (!p2rRecordID || !user_address || !artist_address || !credit || !type) {
       return res
         .status(400)
         .json({ success: false, message: "Required fields are missing" });
     }
 
-    const existingRecord = await P2RRecord.findOne({ p2r_id });
+    const existingRecord = await P2RRecord.findOne({ p2rRecordID });
     if (existingRecord) {
       return res
         .status(400)
@@ -22,7 +22,7 @@ router.post("/createP2RRecord", async (req, res) => {
     }
 
     const newP2RRecord = new P2RRecord({
-      p2r_id,
+      p2rRecordID,
       user_address,
       artist_address,
       credit,
@@ -81,13 +81,11 @@ router.put("/updateField/:p2r_id", async (req, res) => {
       p2rRecord: updatedRecord,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "Failed to update P2R record",
-        details: error.message,
-      });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update P2R record",
+      details: error.message,
+    });
   }
 });
 

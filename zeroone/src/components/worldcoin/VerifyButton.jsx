@@ -27,7 +27,7 @@ const onSuccess = async () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ worldcoin_status: true }), // Update worldCoinStatus to true
+        body: JSON.stringify({ worldcoin_status: true }), // Update worldcoin_status to true
       }
     );
 
