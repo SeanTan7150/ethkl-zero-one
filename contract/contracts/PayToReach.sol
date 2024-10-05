@@ -19,8 +19,6 @@ contract PayToReach {
         int priceForFiveCredits;
     }
 
-    event RewardsClaimed(address artist, uint256 amount);
-
     mapping(uint256 => P2RRecord) public p2rRecords;
 
     uint256 public numberOfP2RRecords = 0;
@@ -140,17 +138,50 @@ contract PayToReach {
             "Total number of claims exceeded"
         );
 
-        // ETH to WEI
-        uint amountToTransfer = ((p2rRecords[_p2rRecordUID].totalAmountPaid *
-            10 ** 18) / p2rRecords[_p2rRecordUID].credit) *
-            _totalNumberOfClaims;
-
-        emit RewardsClaimed(msg.sender, amountToTransfer);
+        uint amountToTransfer = (p2rRecords[_p2rRecordUID].totalAmountPaid /
+            p2rRecords[_p2rRecordUID].credit) * _totalNumberOfClaims;
 
         // Transfer the reward to artist
         (bool success, ) = msg.sender.call{value: amountToTransfer}("");
         require(success, "Transfer failed");
         p2rRecords[_p2rRecordUID].creditCompleted += _totalNumberOfClaims;
+    }
+
+    // Fans refund credit
+    function refundCredits(
+        uint256 _p2rRecordUID,
+        uint256 _totalNumberOfRefunds
+    ) public {
+        // Check fan related or not
+        require(
+            p2rRecords[_p2rRecordUID].fan == msg.sender,
+            "Fan is restricted"
+        );
+
+        // Ensure the record UID is valid
+        require(_p2rRecordUID < numberOfP2RRecords, "Invalid record UID");
+
+        // Ensure the record has not been collected yet
+        require(
+            p2rRecords[_p2rRecordUID].creditCompleted <
+                p2rRecords[_p2rRecordUID].credit,
+            "Funds already fully claimed for this record"
+        );
+
+        // Ensure total number of refunds is valid
+        require(
+            _totalNumberOfRefunds + p2rRecords[_p2rRecordUID].creditCompleted <=
+                p2rRecords[_p2rRecordUID].credit,
+            "Total number of claims exceeded"
+        );
+
+        uint amountToTransfer = (p2rRecords[_p2rRecordUID].totalAmountPaid /
+            p2rRecords[_p2rRecordUID].credit) * _totalNumberOfRefunds;
+
+        // Transfer the reward to artist
+        (bool success, ) = msg.sender.call{value: amountToTransfer}("");
+        require(success, "Transfer failed");
+        p2rRecords[_p2rRecordUID].creditCompleted += _totalNumberOfRefunds;
     }
 
     // Getter return latest P2R ID

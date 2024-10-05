@@ -45,6 +45,8 @@ import {
   StoreTimeCard,
 } from "../../components";
 import { ModalContext } from "../../context/useModalContext";
+import { useContractContext } from "../../context";
+import { useNavigate } from "react-router-dom";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -163,6 +165,7 @@ const creditInfo = [
     eth: 0.001,
     price: 2.32,
     image: "src/assets/store/one-credit.png",
+    val: 1,
   },
   {
     label: "3 Credits",
@@ -170,6 +173,7 @@ const creditInfo = [
     eth: 0.0025,
     price: 5.9,
     image: "src/assets/store/five-credit-two.png",
+    val: 3,
   },
   {
     label: "5 Credits",
@@ -177,6 +181,7 @@ const creditInfo = [
     eth: 0.004,
     price: 9.44,
     image: "src/assets/store/five-credit.png",
+    val: 5,
   },
 ];
 
@@ -187,6 +192,7 @@ const timeToReachInfo = [
     eth: 0,
     price: 0,
     image: "src/assets/store/bicycle-meme-2.png",
+    val: "slow",
   },
   {
     label: "Average (~ 2 Days)",
@@ -194,6 +200,7 @@ const timeToReachInfo = [
     eth: 0.00005,
     price: 0.16,
     image: "src/assets/store/flying-myvi.png",
+    val: "average",
   },
   {
     label: "Fast (~ Within 1 Day)",
@@ -201,6 +208,7 @@ const timeToReachInfo = [
     eth: 0.0001,
     price: 0.23,
     image: "src/assets/store/fast-meme.png",
+    val: "fast",
   },
 ];
 
@@ -361,6 +369,8 @@ function SummaryTableComponent({ selectedCredit, selectedTime }) {
 export default function StorePage() {
   const [allArtists, setAllArtists] = React.useState([]);
 
+  const { buyCredit } = useContractContext();
+
   React.useEffect(() => {
     const fetchArtists = async () => {
       try {
@@ -388,6 +398,8 @@ export default function StorePage() {
   // Selected Time Object
   const [selectedTime, setSelectedTime] = useState(timeToReachInfo[0]);
 
+  const [selectedArtistAddress, setSelectedArtistAddress] = useState("");
+
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
   const [searchTerm, setSearchTerm] = useState("");
@@ -409,6 +421,8 @@ export default function StorePage() {
     },
   });
 
+  const navigate = useNavigate();
+
   const isStepOptional = (step) => {
     return step === -1;
   };
@@ -426,6 +440,33 @@ export default function StorePage() {
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
+  };
+
+  const handlePurchase = async () => {
+    const confirmed = confirm(
+      `Artist: ${selectedArtistAddress}\nCredit amount: ${
+        selectedCredit.val
+      }\nCredit Type: ${selectedTime.val}\nCost: ${
+        selectedCredit.eth + selectedTime.eth
+      }`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await buyCredit(
+        selectedArtistAddress,
+        selectedCredit.val,
+        selectedTime.val,
+        selectedCredit.eth + selectedTime.eth
+      );
+      console.log("Credit purchased successfully");
+      navigate("/chat");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleBack = () => {
@@ -626,6 +667,7 @@ export default function StorePage() {
                   address={artist.address}
                   image={artist.profile_pic_url}
                   togglePurchaseModal={() => {
+                    setSelectedArtistAddress(artist.address);
                     setActiveStep(0);
                     setModalOpen(!modalOpen);
                   }}
@@ -772,7 +814,7 @@ export default function StorePage() {
                 <Box sx={{ flex: "1 1 auto" }} />
 
                 {activeStep === steps.length - 1 ? (
-                  <Button onClick={handleNext}>Purchase</Button>
+                  <Button onClick={handlePurchase}>Purchase</Button>
                 ) : (
                   <Button onClick={handleNext}>Next</Button>
                 )}

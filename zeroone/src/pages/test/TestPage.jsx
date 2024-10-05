@@ -19,8 +19,17 @@ export default function TestPage() {
   const [claimRewardP2RID, setClaimRewardP2RID] = useState("0");
   const [claimRewardNumberOfClaims, setClaimRewardNumberOfClaims] = useState(0);
 
-  const { registerNewArtist, artistSetPrice, buyCredit, claimRewards } =
-    useContractContext();
+  const [refundCreditP2RID, setRefundCreditP2RID] = useState("0");
+  const [refundCreditNumberOfRefunds, setRefundCreditNumberOfRefunds] =
+    useState(0);
+
+  const {
+    registerNewArtist,
+    artistSetPrice,
+    buyCredit,
+    claimRewards,
+    refundCredits,
+  } = useContractContext();
 
   const handleRegisterNewArtist = async (event) => {
     event.preventDefault();
@@ -73,6 +82,16 @@ export default function TestPage() {
     try {
       await claimRewards(claimRewardP2RID, claimRewardNumberOfClaims);
       console.log("Reward claimed successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleRefundCredits = async (event) => {
+    event.preventDefault();
+    try {
+      await refundCredits(refundCreditP2RID, refundCreditNumberOfRefunds);
+      console.log("Credit refunded successfully");
     } catch (error) {
       console.error(error);
     }
@@ -256,6 +275,39 @@ export default function TestPage() {
           Claim
         </button>
       </form>
+
+      <hr />
+
+      <div>Fan Refund Credit</div>
+      <form autoComplete="off">
+        <label>P2R ID: </label>
+        <input
+          type="text"
+          placeholder="ID"
+          onChange={(e) => {
+            setRefundCreditP2RID(e.target.value);
+          }}
+          value={refundCreditP2RID}
+          required
+        />
+        <br />
+        <label>Number of refunds: </label>
+        <input
+          type="number"
+          placeholder="0"
+          onChange={(e) => {
+            setRefundCreditNumberOfRefunds(e.target.value);
+          }}
+          value={refundCreditNumberOfRefunds}
+          required
+        />
+        <br />
+        <button type="submit" onClick={handleRefundCredits}>
+          Refund
+        </button>
+      </form>
+
+      <hr />
     </>
   );
 }

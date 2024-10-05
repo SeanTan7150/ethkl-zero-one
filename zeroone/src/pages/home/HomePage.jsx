@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HomeGenreCard, HomeArtistCard } from "../../components";
 
@@ -21,14 +21,14 @@ import {
 } from "@mui/material";
 
 export default function HomePage() {
-  const [allArtists, setAllArtists] = React.useState([]);
+  const [allArtists, setAllArtists] = useState([]);
   const navigate = useNavigate(); // Initialize the navigate hook
   const handleViewProfile = (artistAddress) => {
     // Redirect to the profile page with the artist's address as a query parameter
     navigate(`/profile?address=${artistAddress}`);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchArtists = async () => {
       try {
         const res = await fetch("http://localhost:5001/api/user/getArtists");

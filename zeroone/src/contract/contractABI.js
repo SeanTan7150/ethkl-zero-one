@@ -1,24 +1,5 @@
 export const contractABI = [
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "address",
-        name: "artist",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "RewardsClaimed",
-    type: "event",
-  },
-  {
     inputs: [
       { internalType: "int256", name: "_priceForOneCredit", type: "int256" },
       { internalType: "int256", name: "_priceForThreeCredits", type: "int256" },
@@ -104,6 +85,20 @@ export const contractABI = [
       { internalType: "uint256", name: "timestamp", type: "uint256" },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "_p2rRecordUID", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "_totalNumberOfRefunds",
+        type: "uint256",
+      },
+    ],
+    name: "refundCredits",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
