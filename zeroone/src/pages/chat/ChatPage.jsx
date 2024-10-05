@@ -257,10 +257,84 @@ export default function ChatPage() {
     calculateRemainingCredits(remainingCredit);
   };
 
-  const onSendMessage = () => {
-    console.log(message);
+  const onSendMessage = async () => {
+    const send_id = await fetchTargetUser(loggedInAddress);
+
+    const msgData = {
+      sender_id: send_id._id,
+      fanAddress: loggedInAddress,
+      artistAddress: chatMessages[activeContact].address,
+      content: message,
+      isP2R: true,
+      p2rRecordID: creditByType.average.p2rRecords[0], /// Based on the user selection on the credit get [0] of that type on the p2rRecords
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/messages/sendMsg",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(msgData),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Message sent successfully:", result);
+        window.location.reload();
+        // You can update the UI or notify the user here if needed
+      } else {
+        console.error("Failed to send message:", result.message);
+      }
+    } catch (error) {
+      console.error("Error in sending message:", error);
+    }
     setMessage("");
-    // Send message logic here
+  };
+
+  const onReplyMessage = async (replyToMessageId) => {
+    const send_id = await fetchTargetUser(loggedInAddress); // Fetch the sender's ID based on the logged-in user's address
+
+    const replyData = {
+      sender_id: send_id._id,
+      fanAddress: loggedInAddress, // Address of the user replying
+      artistAddress: chatMessages[activeContact].address, // The artist's address from the chat messages
+      content: message, // The reply message content from the input
+      isP2R: true, // Assuming the reply is P2R-related, you can modify this based on user selection
+      reply_to: replyToMessageId, // The ID of the message being replied to
+      p2rRecordID: creditByType.average.p2rRecords[0], // Based on the user selection on the credit get [0] of that type on the p2rRecords
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/messages/replyMsg",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(replyData),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Reply sent successfully:", result);
+        // Optionally update the UI or notify the user here
+      } else {
+        console.error("Failed to send reply:", result.message);
+      }
+    } catch (error) {
+      console.error("Error in sending reply:", error);
+    }
+
+    // Clear the message input after sending the reply
+    setMessage("");
   };
 
   return (
@@ -307,7 +381,6 @@ export default function ChatPage() {
                 No conversations found
               </Typography>
             )}
-            {console.log(chatMessages)}
             {chatMessages.map((contact, index) => (
               <ListItem
                 className={`
@@ -443,7 +516,6 @@ export default function ChatPage() {
               flexDirection: "column",
             }}
           >
-            {console.log(fetchedMessages)}
             {fetchedMessages.map((msg, index) => (
               <div key={index}>
                 {msg.sender_id.address === loggedInAddress ? (

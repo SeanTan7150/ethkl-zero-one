@@ -211,6 +211,8 @@ export default function ProfilePage() {
                           px: 6,
                           py: 1,
                           borderRadius: "10px",
+                          fontSize: "12px",
+                          marginLeft: "10px",
                         }}
                         onClick={() => {
                           setModalOpen(true);

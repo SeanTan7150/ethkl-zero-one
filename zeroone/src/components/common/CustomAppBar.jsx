@@ -136,7 +136,8 @@ export default function CustomAppBar({ toggleDrawer }) {
 
       const data = await res.json();
       console.log("User created:", data);
-      window.location.reload();
+      setModalOpen(false);
+      navigate("/home");
     } catch (error) {
       console.error(error);
     }

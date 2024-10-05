@@ -7,11 +7,24 @@ const router = express.Router();
 
 // Function to update P2R Record field
 const updateP2RField = async (p2rRecordID, field) => {
-  const updateData = { $inc: { [field]: 1 } };
+  let updateData = {};
+
+  if (field === "replied") {
+    // When 'replied' is incremented, 'sent' should be decremented
+    updateData = { $inc: { replied: 1, sent: -1 } };
+  } else if (field === "creditCompleted") {
+    // When 'creditCompleted' is incremented, 'replied' should be decremented
+    updateData = { $inc: { creditCompleted: 1, replied: -1 } };
+  } else {
+    // For normal increments like 'sent'
+    updateData = { $inc: { [field]: 1 } };
+  }
+
   return await P2RRecord.findOneAndUpdate({ _id: p2rRecordID }, updateData, {
     new: true,
   });
 };
+
 router.post("/sendMsg", async (req, res) => {
   const { sender_id, fanAddress, artistAddress, content, isP2R, p2rRecordID } =
     req.body;
