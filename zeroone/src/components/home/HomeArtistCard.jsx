@@ -10,7 +10,7 @@ import {
 
 export default function HomeArtistCard({
   onNavigate,
-  artistName = "Username",
+  artistName = "Unknown User",
   artistImage,
 }) {
   return (

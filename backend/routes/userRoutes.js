@@ -5,8 +5,7 @@ const router = express.Router();
 
 // Create User API
 router.post("/createUser", async (req, res) => {
-  const { address, username, profile_pic_url, bio, worldCoinStatus, isArtist } =
-    req.body;
+  const { address, username, profile_pic_url, bio } = req.body;
 
   if (!address) {
     return res.status(400).json({ error: "Address is required" });
@@ -18,8 +17,6 @@ router.post("/createUser", async (req, res) => {
       username,
       profile_pic_url,
       bio,
-      worldCoinStatus,
-      isArtist,
     });
 
     const savedUser = await newUser.save();

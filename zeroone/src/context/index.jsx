@@ -5,7 +5,7 @@ import { contractABI } from "../contract/contractABI";
 const ContractContext = createContext();
 
 export const ContractContextProvider = ({ children }) => {
-  const contractAddress = "0x866e3b527FCdBD85348a9935845b70bA61702ebB";
+  const contractAddress = "0x06cd47372F721c9991efe6eEED75B43552dD24f0";
 
   const dbg = async () => {
     return "Hello World Debug";
@@ -149,6 +149,50 @@ export const ContractContextProvider = ({ children }) => {
     }
   };
 
+  const refundCredits = async (pr2ID, numberOfRefunds) => {
+    try {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          provider
+        );
+        const signer = provider.getSigner();
+        const contractWithSigner = contract.connect(signer);
+
+        const tx = await contractWithSigner.refundCredits(
+          pr2ID,
+          numberOfRefunds
+        );
+        console.log("Transaction sent: ", tx.hash);
+        const receipt = await tx.wait();
+        console.log("Transaction successful: ", receipt.transactionHash);
+      }
+    } catch (error) {
+      console.error("Transaction failed: ", error);
+    }
+  };
+
+  const getLatestP2RID = async () => {
+    try {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          provider
+        );
+
+        const id = await contract.getLatestP2RID();
+        return id;
+      }
+    } catch (error) {
+      console.error("Transaction failed: ", error);
+      return -1;
+    }
+  };
+
   return (
     <ContractContext.Provider
       value={{
@@ -157,6 +201,8 @@ export const ContractContextProvider = ({ children }) => {
         artistSetPrice,
         buyCredit,
         claimRewards,
+        refundCredits,
+        getLatestP2RID,
       }}
     >
       {children}
