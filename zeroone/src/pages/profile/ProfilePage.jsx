@@ -18,16 +18,23 @@ import {
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 import VerifiedButton from "../../components/worldcoin/VerifyButton";
+import { useLocation } from "react-router-dom";
 
 export default function ProfilePage() {
+  const location = useLocation();
+
+  // Use URLSearchParams to extract the 'address' parameter
+  const searchParams = new URLSearchParams(location.search);
+  const profileAddress =
+    searchParams.get("address") ?? localStorage.getItem("loggedInAddress");
+
   const [userData, setUserData] = React.useState(null);
-  const loggedInAddress = localStorage.getItem("loggedInAddress") ?? "";
 
   React.useEffect(() => {
     const fetchUserData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5001/api/user/getUser/${loggedInAddress}`
+          `http://localhost:5001/api/user/getUser/${profileAddress}`
         );
         if (!res.ok) {
           throw new Error("Failed to fetch user data");
@@ -39,11 +46,11 @@ export default function ProfilePage() {
       }
     };
 
-    if (loggedInAddress !== "") {
-      // Fetch user data only if loggedInAddress is not empty
+    if (profileAddress) {
+      // Fetch user data only if profileAddress is not empty
       fetchUserData();
     }
-  }, [loggedInAddress]);
+  }, [profileAddress]);
 
   return (
     <Box
@@ -126,7 +133,7 @@ export default function ProfilePage() {
               variant="caption"
               sx={{ wordBreak: "break-all", mb: 1, fontWeight: "bold" }}
             >
-              {loggedInAddress}
+              {profileAddress}
             </Typography>
             <Typography
               variant="body2"
@@ -179,38 +186,39 @@ export default function ProfilePage() {
           </Grid>
         </Grid>
 
-        <Box sx={{ mb: 3 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              mr: 2,
-              backgroundColor: "#333",
-              color: "#fff",
-              fontWeight: "bold",
-              px: 6,
-              py: 1,
-              borderRadius: "10px",
-            }}
-          >
-            Follow
-          </Button>
-          <Button
-            variant="contained"
-            sx={{
-              mr: 2,
-              backgroundColor: "#333",
-              color: "#fff",
-              fontWeight: "bold",
-              px: 6,
-              py: 1,
-              borderRadius: "10px",
-            }}
-          >
-            Message
-          </Button>
-        </Box>
-
+        {searchParams.get("address") !== null && (
+          <Box sx={{ mb: 3 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                mr: 2,
+                backgroundColor: "#333",
+                color: "#fff",
+                fontWeight: "bold",
+                px: 6,
+                py: 1,
+                borderRadius: "10px",
+              }}
+            >
+              Follow
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                mr: 2,
+                backgroundColor: "#333",
+                color: "#fff",
+                fontWeight: "bold",
+                px: 6,
+                py: 1,
+                borderRadius: "10px",
+              }}
+            >
+              Message
+            </Button>
+          </Box>
+        )}
         <Box
           sx={{
             borderBottom: "1px solid #000",

@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Box,
@@ -20,6 +21,11 @@ import {
 
 export default function HomePage() {
   const [allArtists, setAllArtists] = React.useState([]);
+  const navigate = useNavigate(); // Initialize the navigate hook
+  const handleViewProfile = (artistAddress) => {
+    // Redirect to the profile page with the artist's address as a query parameter
+    navigate(`/profile?address=${artistAddress}`);
+  };
 
   React.useEffect(() => {
     const fetchArtists = async () => {
@@ -39,7 +45,6 @@ export default function HomePage() {
     fetchArtists();
   }, []);
 
-  // return <div>{allArtists.length !== 0 ? "Artist" : "No"}</div>;
   return (
     <>
       <Box
