@@ -8,7 +8,12 @@ import {
   Button,
 } from "@mui/material";
 
-export default function StoreArtistCard({ togglePurchaseModal }) {
+export default function StoreArtistCard({
+  togglePurchaseModal,
+  username,
+  address,
+  image,
+}) {
   return (
     <Card
       sx={{
@@ -24,7 +29,7 @@ export default function StoreArtistCard({ togglePurchaseModal }) {
         component="img"
         alt="green iguana"
         height="230"
-        image="src/assets/store/store-placeholder.jpg"
+        image={image ?? "src/assets/store/store-placeholder.jpg"}
       />
       <CardContent>
         <Typography
@@ -33,13 +38,13 @@ export default function StoreArtistCard({ togglePurchaseModal }) {
           component="div"
           sx={{ fontWeight: " bold" }}
         >
-          Justin Bieber
+          {username ?? "Username"}
         </Typography>
         <Typography
           variant="body2"
           sx={{ color: "text.secondary", fontSize: "10px" }}
         >
-          0x69e75a2346ae86c1c70f91216e464811a99ed87f
+          {address ?? "0x69e75a2346ae86c1c70f91216e464811a99ed87f"}
         </Typography>
       </CardContent>
       <CardActions>

@@ -1,22 +1,22 @@
 export const sidebarList = {
   Discover: {
-    active: "src/assets/sidebar/active/home.png",
-    inactive: "src/assets/sidebar/inactive/home.png",
+    active: "src/assets/sidebar/active/ion_home (1).png",
+    inactive: "src/assets/sidebar/inactive/ion_home.png",
     url: "/home",
   },
   Chat: {
-    active: "src/assets/sidebar/active/farmer.png",
-    inactive: "src/assets/sidebar/inactive/farmer.png",
+    active: "src/assets/sidebar/active/ion_chatbubble-sharp (1).png",
+    inactive: "src/assets/sidebar/inactive/ion_chatbubble-sharp.png",
     url: "/chat",
   },
   Credit: {
-    active: "src/assets/sidebar/active/chart.png",
-    inactive: "src/assets/sidebar/inactive/chart.png",
+    active: "src/assets/sidebar/active/ion_logo-usd (1).png",
+    inactive: "src/assets/sidebar/inactive/ion_logo-usd.png",
     url: "/credit",
   },
   Profile: {
-    active: "src/assets/sidebar/active/card.png",
-    inactive: "src/assets/sidebar/inactive/card.png",
+    active: "src/assets/sidebar/active/ion_person (1).png",
+    inactive: "src/assets/sidebar/inactive/ion_person.png",
     url: "/profile",
   },
   "Landing Page": {
@@ -25,8 +25,8 @@ export const sidebarList = {
     url: "/landing-page",
   },
   Store: {
-    active: "src/assets/sidebar/active/card.png",
-    inactive: "src/assets/sidebar/inactive/card.png",
+    active: "src/assets/sidebar/active/ion_storefront (1).png",
+    inactive: "src/assets/sidebar/inactive/ion_storefront.png",
     url: "/store",
   },
   "System Care": {

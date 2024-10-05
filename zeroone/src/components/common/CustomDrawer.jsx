@@ -92,6 +92,7 @@ export default function CustomDrawer({ open, toggleDrawer }) {
                   <div
                     style={{
                       borderRadius: "20px",
+                      color: "#333",
                       padding: "0.8rem 2rem",
                       backgroundColor: "#fff",
                       boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
@@ -105,7 +106,8 @@ export default function CustomDrawer({ open, toggleDrawer }) {
                       style={{
                         width: "25px",
                         height: "25px",
-                        backgroundColor: "#6FC635",
+                        // backgroundColor: "#6FC635",
+                        backgroundColor: "#333",
                         padding: "0.5rem",
                       }}
                     />
