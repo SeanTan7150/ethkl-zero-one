@@ -359,6 +359,26 @@ function SummaryTableComponent({ selectedCredit, selectedTime }) {
 }
 
 export default function StorePage() {
+  const [allArtists, setAllArtists] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchArtists = async () => {
+      try {
+        const res = await fetch("http://localhost:5001/api/user/getArtists");
+        if (!res.ok) {
+          throw new Error("Failed to fetch artists");
+        }
+        const data = await res.json();
+        setAllArtists(data);
+        console.log(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchArtists();
+  }, []);
+
   // Selected Credit Index
   const [activeCard, setActiveCard] = useState(0);
   // Selected Credit Object
@@ -530,6 +550,7 @@ export default function StorePage() {
         <Box
           sx={{
             p: "3rem 4rem 3rem 4rem",
+            width: "100%",
             backgroundColor: "#f0f2f5",
           }}
         >
@@ -598,7 +619,20 @@ export default function StorePage() {
             </Box>
           </Box>
           <Grid2 container spacing={3}>
-            <Grid2 item xs={3}>
+            {allArtists.map((artist, index) => (
+              <Grid2 item xs={3} key={index}>
+                <StoreArtistCard
+                  username={artist.username}
+                  address={artist.address}
+                  image={artist.profile_pic_url}
+                  togglePurchaseModal={() => {
+                    setActiveStep(0);
+                    setModalOpen(!modalOpen);
+                  }}
+                />
+              </Grid2>
+            ))}
+            {/* <Grid2 item xs={3}>
               <StoreArtistCard
                 togglePurchaseModal={() => {
                   setActiveStep(0);
@@ -619,7 +653,7 @@ export default function StorePage() {
             </Grid2>
             <Grid2 item xs={3}>
               <StoreArtistCard />
-            </Grid2>
+            </Grid2> */}
           </Grid2>
         </Box>
       </Box>
