@@ -32,6 +32,65 @@ export default function ChatPage() {
 
   const [fetchedMessages, setFetchedMessages] = useState([]);
 
+  // New state to store the organized remaining credit by type
+  const [creditByType, setCreditByType] = useState({
+    fast: { creditRemaining: 0, p2rRecords: [] },
+    average: { creditRemaining: 0, p2rRecords: [] },
+    slow: { creditRemaining: 0, p2rRecords: [] },
+  });
+  const [remainingCreditsDisplay, setRemainingCreditsDisplay] = useState("");
+
+  useEffect(() => {
+    // Organizing the remaining credit by type
+    const creditEntries = Object.entries(creditByType)
+      .filter(([type, { creditRemaining }]) => creditRemaining > 0) // Filter out types with 0 remaining
+      .map(([type, { creditRemaining }]) => {
+        return `${creditRemaining} ${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        }`; // Capitalizing the first letter of the type
+      });
+
+    // Joining the entries and setting the state
+    if (creditEntries.length > 0) {
+      setRemainingCreditsDisplay(
+        `Remaining: ${creditEntries.join(", ")} Credit`
+      );
+    } else {
+      setRemainingCreditsDisplay("No remaining credits"); // Optional: Handle the case where all credits are 0
+    }
+  }, [creditByType]);
+
+  const calculateRemainingCredits = (records) => {
+    const creditSummary = {
+      fast: { creditRemaining: 0, p2rRecords: [] },
+      average: { creditRemaining: 0, p2rRecords: [] },
+      slow: { creditRemaining: 0, p2rRecords: [] },
+    };
+
+    records.forEach((record) => {
+      // Calculate remaining credit for this record
+      const remainingCredit =
+        record.credit - (record.sent + record.replied + record.creditCompleted);
+
+      // If remaining credit is greater than 0, categorize by type
+      if (remainingCredit > 0) {
+        if (record.type === "fast") {
+          creditSummary.fast.creditRemaining += remainingCredit;
+          creditSummary.fast.p2rRecords.push(record._id);
+        } else if (record.type === "average") {
+          creditSummary.average.creditRemaining += remainingCredit;
+          creditSummary.average.p2rRecords.push(record._id);
+        } else if (record.type === "slow") {
+          creditSummary.slow.creditRemaining += remainingCredit;
+          creditSummary.slow.p2rRecords.push(record._id);
+        }
+      }
+    });
+
+    setCreditByType(creditSummary); // Store the result in state
+    console.log(creditSummary, "credit remaining");
+  };
+
   // Purchase Modal States
   const [activeCard, setActiveCard] = useState(0);
   // Selected Credit Object
@@ -91,6 +150,11 @@ export default function ChatPage() {
             // Fetch messages for the first conversation after the conversation is loaded
             if (allConversation[0]?._id) {
               await fetchMessages(allConversation[0]._id);
+              const remainingCredit = await fetchRemainingCredit(
+                allConversation[0].participants[0],
+                allConversation[0].participants[1]
+              );
+              calculateRemainingCredits(remainingCredit);
             }
           }
         } catch (error) {
@@ -161,12 +225,36 @@ export default function ChatPage() {
     }
   };
 
+  const fetchRemainingCredit = async (userAddress, artistAddress) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5001/api/p2r/getP2RRecords/${userAddress}/${artistAddress}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch P2R records");
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        return data.records;
+      }
+    } catch (error) {
+      console.error("Error fetching P2R records:", error);
+    }
+  };
+
   const onChangeActiveContact = async (index) => {
     setActiveContact(index);
     const conversationId = chatMessages[index]?.conversation?._id;
     if (conversationId) {
       await fetchMessages(conversationId); // Fetch messages only if conversationId is available
     }
+    const remainingCredit = await fetchRemainingCredit(
+      conversationId.address,
+      loggedInAddress
+    );
+    calculateRemainingCredits(remainingCredit);
   };
 
   const onSendMessage = () => {
@@ -340,7 +428,7 @@ export default function ChatPage() {
                   Buy Credit
                 </Button>
                 <Typography variant="body2" style={{ marginLeft: 10 }}>
-                  Remaining: 5 Fast, 10 Slow Credit
+                  {remainingCreditsDisplay}
                 </Typography>
               </div>
             </Toolbar>
@@ -383,6 +471,7 @@ export default function ChatPage() {
                 ) : (
                   // When `reply_to` is null, display a message from the other user
                   <SenderMessage
+                    is_p2r={msg.is_p2r}
                     direction="start"
                     message={msg.message_content}
                   />

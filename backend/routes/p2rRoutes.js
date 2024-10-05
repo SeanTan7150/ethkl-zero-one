@@ -89,4 +89,41 @@ router.put("/updateField/:p2r_id", async (req, res) => {
   }
 });
 
+// GET API to fetch all P2R Records that match user_address and artist_address
+router.get("/getP2RRecords/:user_address/:artist_address", async (req, res) => {
+  const { user_address, artist_address } = req.params;
+
+  try {
+    if (!user_address || !artist_address) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User or artist address is missing" });
+    }
+
+    // Find all records that match both user_address and artist_address
+    const records = await P2RRecord.find({
+      user_address,
+      artist_address,
+    });
+
+    if (records.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No matching records found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "P2R records fetched successfully",
+      records,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch P2R records",
+      details: error.message,
+    });
+  }
+});
+
 export default router;

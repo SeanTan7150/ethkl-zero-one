@@ -25,7 +25,9 @@ export default function ReplyMessage({
       style={{
         minWidth: "200px",
         maxWidth: "600px",
+        marginLeft: direction === "end" ? "auto" : null,
         alignSelf: direction,
+        marginBottom: 10,
       }}
     >
       <Typography
