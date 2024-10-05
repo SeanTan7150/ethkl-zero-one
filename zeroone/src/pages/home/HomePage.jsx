@@ -55,16 +55,16 @@ const createP2R = async () => {
 
 const sendDummyMessage = async () => {
   const dummyData = {
-    sender_id: "64ecccfcfc5ae1111abccdef", // Replace with a valid sender_id from your DB
-    fanAddress: "0xFanAddress123", // Dummy fan address (e.g. a wallet address or user identifier)
-    artistAddress: "0xArtistAddress456", // Dummy artist address (wallet address or user identifier)
-    content: "This is a dummy message content", // The actual message content
+    sender_id: "6700cc3a3e98a7cfea8c15e0", // Replace with a valid sender_id from your DB
+    fanAddress: "0xc7b207fdc7df0b4a99ef033736ae8307e6105ad5", // Dummy fan address (e.g. a wallet address or user identifier)
+    artistAddress: "0x69e75a2346ae86c1c70f91216e464811a99ed87f", // Dummy artist address (wallet address or user identifier)
+    content: "This is a dummy message content123", // The actual message content
     isP2R: true, // Specify whether this is related to a P2R record or not
-    p2rRecordID: "64ecccfcdummyrecord1234", // Replace with a valid P2R record ID
+    p2rRecordID: "6700bfe3a841cdf2e49591c3", // Replace with a valid P2R record ID
   };
 
   try {
-    const response = await fetch("http://localhost:5000/sendMsg", {
+    const response = await fetch("http://localhost:5001/api/messages/sendMsg", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -198,8 +198,8 @@ export default function HomePage() {
         </Box>
         <button
           onClick={() => {
-            // sendMSG();
-            createP2R();
+            sendDummyMessage();
+            // createP2R();
           }}
         >
           Test

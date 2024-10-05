@@ -18,13 +18,14 @@ import {
 export default function ReplyMessage({
   replyMessage = "Message 1",
   message = "Reply 1",
+  direction,
 }) {
   return (
     <Box
       style={{
         minWidth: "200px",
         maxWidth: "600px",
-        alignSelf: "start",
+        alignSelf: direction,
       }}
     >
       <Typography
@@ -67,8 +68,8 @@ export default function ReplyMessage({
         style={{
           minWidth: "200px",
           padding: "15px 25px",
-          backgroundColor: "#333",
-          color: "white",
+          backgroundColor: direction === "end" ? "#fff" : "#333",
+          color: direction === "end" ? "black" : "white",
           maxWidth: "600px",
           alignSelf: "start",
           borderRadius: "50px",

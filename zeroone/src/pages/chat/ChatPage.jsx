@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ModalContext } from "../../context/useModalContext";
-
 import { creditInfo, timeToReachInfo } from "../../types";
 import {
   Box,
@@ -18,12 +17,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import {
-  Search,
-  Verified,
-  ChatBubbleOutline,
-  //   SendIcon,
-} from "@mui/icons-material";
+import { Search, Verified } from "@mui/icons-material";
 import SendIcon from "@mui/icons-material/Send";
 import { SenderMessage, ReplyMessage, PurchaseModal } from "../../components";
 
@@ -34,8 +28,11 @@ export default function ChatPage() {
 
   const [message, setMessage] = React.useState("");
   const [activeContact, setActiveContact] = React.useState(0);
-  const [conversations, setConversations] = useState([]);
-  const [userData, setUserData] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
+
+  const [fetchedMessages, setFetchedMessages] = useState([]);
+
+  // Purchase Modal States
   const [activeCard, setActiveCard] = useState(0);
   // Selected Credit Object
   const [selectedCredit, setSelectedCredit] = useState(creditInfo[0]);
@@ -44,79 +41,134 @@ export default function ChatPage() {
   // Selected Time Object
   const [selectedTime, setSelectedTime] = useState(timeToReachInfo[0]);
 
-  // Get the address from query parameters
-  const params = new URLSearchParams(window.location.search);
-  const profileAddress = params.get("address"); // The address you want to chat with
-
-  // Fetch user data
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5001/api/user/getUser/${profileAddress}`
-        );
-        if (!res.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-        const data = await res.json();
-        setUserData(data); // Set the user data state
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    if (
-      profileAddress &&
-      !conversations.some((convo) =>
-        convo.participants.includes(profileAddress)
-      )
-    ) {
-      // Only fetch user data if the address is not found in conversations
-      fetchUserData();
-    }
-  }, [profileAddress, conversations]);
-
-  // If userData exists, map it to the conversations array for display
-  const mappedConversations = userData
-    ? [
+  const fetchTargetUser = async (address) => {
+    try {
+      console.log("Fetching user with address:", address);
+      const response = await fetch(
+        `http://localhost:5001/api/user/getUser/${address}`, // Address in URL
         {
-          address: userData.address,
-          username: userData.username,
-          profile_pic_url: userData.profile_pic_url,
-          bio: userData.bio,
-          // You can add more properties here if needed
-        },
-        ...conversations, // Assuming conversations can have other entries as well
-      ]
-    : conversations;
+          method: "GET",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      const data = await response.json(); // Assuming the response is in JSON format
+
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5001/api/conversation/getConversation/${loggedInAddress}`, // Address in URL
-          {
-            method: "GET",
+    const fetchData = async () => {
+      const fetchConversations = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5001/api/conversation/getConversation/${loggedInAddress}`,
+            { method: "GET" }
+          );
+          const data = await response.json();
+
+          if (data.success) {
+            const allConversation = data.conversations;
+            const targetUserAddress = allConversation[0].participants.find(
+              (p) => p !== loggedInAddress
+            );
+
+            const userDetails = await fetchTargetUser(targetUserAddress);
+            console.log("User details fetched:", userDetails);
+
+            const combinedChatMessage = {
+              ...userDetails,
+              conversation: allConversation[0],
+            };
+
+            // Update ChatMessages state with the new combined object
+            setChatMessages((prev) => [...prev, combinedChatMessage]);
+
+            // Fetch messages for the first conversation after the conversation is loaded
+            if (allConversation[0]?._id) {
+              await fetchMessages(allConversation[0]._id);
+            }
           }
-        );
-        const data = await response.json(); // Assuming the response is in JSON format
-        if (data.success) {
-          setConversations(data.conversations);
+        } catch (error) {
+          console.error("Failed to fetch conversations:", error);
         }
-      } catch (error) {
-        console.error("Failed to fetch conversations:", error);
-      }
+      };
+
+      const fetchURLAddress = async () => {
+        const params = new URLSearchParams(window.location.search);
+        const profileAddress = params.get("address");
+
+        if (profileAddress) {
+          const addressExists = chatMessages.some(
+            (contact) => contact.address === profileAddress
+          );
+
+          if (!addressExists) {
+            console.log("Fetching NEW user data for:", profileAddress);
+            try {
+              const res = await fetch(
+                `http://localhost:5001/api/user/getUser/${profileAddress}`
+              );
+              if (!res.ok) throw new Error("Failed to fetch user data");
+              const data = await res.json();
+              setChatMessages((prev) => {
+                if (!prev.some((contact) => contact.address === data.address)) {
+                  return [data, ...prev];
+                }
+                return prev;
+              });
+              console.log("User data fetched successfully:", data);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        }
+      };
+
+      // Fetch conversations first, then fetch URL address
+      await fetchConversations();
+      await fetchURLAddress();
     };
 
-    if (loggedInAddress) {
-      fetchConversations();
-    }
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInAddress]);
 
-  const onChangeActiveContact = (index) => {
-    setActiveContact(index);
-    console.log(activeContact);
+  const fetchMessages = async (conversationId) => {
+    if (!conversationId) {
+      console.warn("No valid conversation ID found.");
+      return;
+    }
+
+    console.log("Fetching messages for conversation:", conversationId);
+    try {
+      const response = await fetch(
+        `http://localhost:5001/api/conversation/conversationMsg/${conversationId}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch messages");
+      }
+      const data = await response.json();
+
+      setFetchedMessages(data.messages);
+      console.log("Fetched messages:", data.messages);
+    } catch (error) {
+      console.error("Error fetching conversation messages:", error);
+    }
   };
+
+  const onChangeActiveContact = async (index) => {
+    setActiveContact(index);
+    const conversationId = chatMessages[index]?.conversation?._id;
+    if (conversationId) {
+      await fetchMessages(conversationId); // Fetch messages only if conversationId is available
+    }
+  };
+
   const onSendMessage = () => {
     console.log(message);
     setMessage("");
@@ -127,10 +179,11 @@ export default function ChatPage() {
     <>
       <div
         style={{
-          height: "100%",
+          height: "calc(100vh - 60px)",
           display: "flex",
           backgroundColor: "#f0f2f5",
           alignItems: "stretch",
+          maxHeight: "calc(100vh - 60px)",
         }}
       >
         {/* Left Sidebar */}
@@ -161,12 +214,13 @@ export default function ChatPage() {
           />
           {/* Contact Panel */}
           <List>
-            {mappedConversations.length === 0 && (
+            {chatMessages.length === 0 && (
               <Typography variant="h6" style={{ margin: "1rem" }}>
                 No conversations found
               </Typography>
             )}
-            {mappedConversations.map((contact, index) => (
+            {console.log(chatMessages)}
+            {chatMessages.map((contact, index) => (
               <ListItem
                 className={`
                 list-contact
@@ -200,7 +254,7 @@ export default function ChatPage() {
                   primary={
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       {contact.username || "Unknown User"}
-                      {userData?.is_artist && (
+                      {contact?.is_artist && (
                         <Verified
                           color="primary"
                           style={{ marginLeft: 5, width: "auto" }}
@@ -249,7 +303,8 @@ export default function ChatPage() {
               >
                 <Avatar
                   src={
-                    userData?.profile_pic_url || "/path-to-default-avatar.jpg"
+                    chatMessages[activeContact]?.profile_pic_url ||
+                    "/path-to-default-avatar.jpg"
                   }
                 />
                 {/* Use the selected user's name or a default name */}
@@ -257,14 +312,14 @@ export default function ChatPage() {
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography variant="h5" style={{ marginLeft: 10 }}>
-                      {userData?.username || "Unknown User"}
+                      {chatMessages[activeContact]?.username || "Unknown User"}
                     </Typography>
-                    {userData?.is_artist && (
+                    {chatMessages[activeContact]?.is_artist && (
                       <Verified color="primary" style={{ marginLeft: 5 }} />
                     )}
                   </Box>
                   <Typography variant="body2" style={{ marginLeft: 10 }}>
-                    {userData?.address}
+                    {chatMessages[activeContact]?.address}
                   </Typography>
                 </Box>
               </Box>
@@ -300,11 +355,46 @@ export default function ChatPage() {
               flexDirection: "column",
             }}
           >
-            <SenderMessage message="This is the content" />
+            {console.log(fetchedMessages)}
+            {fetchedMessages.map((msg, index) => (
+              <div key={index}>
+                {msg.sender_id.address === loggedInAddress ? (
+                  msg.reply_to ? (
+                    // When `reply_to` is not null, display a reply message
+                    <ReplyMessage
+                      direction="end"
+                      message={msg.message_content} // The actual message content
+                      replyMessage={msg.reply_to.message_content} // The content of the message being replied to
+                    />
+                  ) : (
+                    // When `reply_to` is null, display a sender message
+                    <SenderMessage
+                      direction="end"
+                      message={msg.message_content}
+                    />
+                  )
+                ) : msg.reply_to ? (
+                  // When `reply_to` is not null, but the message is from the other user
+                  <ReplyMessage
+                    direction="start"
+                    message={msg.message_content}
+                    replyMessage={msg.reply_to.message_content}
+                  />
+                ) : (
+                  // When `reply_to` is null, display a message from the other user
+                  <SenderMessage
+                    direction="start"
+                    message={msg.message_content}
+                  />
+                )}
+              </div>
+            ))}
+            {/* <SenderMessage message="This is the content" />
             <ReplyMessage
+              direction="end"
               message="This is the content"
               replyMessage="This is the message replied to"
-            />
+            /> */}
           </div>
           <Paper
             style={{

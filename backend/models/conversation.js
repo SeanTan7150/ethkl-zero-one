@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 
 // Conversation schema
 const conversationSchema = new Schema({
-  participants: [{ type: [String], required: true }],
+  participants: [{ type: String, required: true }], // Change this line
   is_group: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now },
   active_at: { type: Date, default: Date.now },

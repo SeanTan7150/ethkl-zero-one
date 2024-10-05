@@ -68,7 +68,7 @@ export default function RootLayout() {
         ${modalOpen ? "opacity-half" : "opacity-full"}`}
         sx={{
           width: "100%",
-          height: "100%",
+          height: "100vh",
           // display: "flex",
           // flexDirection: "column",
           // justifyContent: "stretch",
@@ -88,8 +88,8 @@ export default function RootLayout() {
         />
         <Box
           sx={{
-            height: "100%",
-
+            height: "calc(100vh - 60px)", // Deduct AppBar height
+            maxHeight: "calc(100vh - 60px)", // Set maxHeight as well
             backgroundColor: "#f0f2f5",
           }}
         >

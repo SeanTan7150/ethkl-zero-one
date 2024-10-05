@@ -12,33 +12,38 @@ const updateP2RField = async (p2rRecordID, field) => {
     new: true,
   });
 };
-
-// POST API to send a message
 router.post("/sendMsg", async (req, res) => {
   const { sender_id, fanAddress, artistAddress, content, isP2R, p2rRecordID } =
     req.body;
 
   try {
-    if (
-      !sender_id ||
-      !fanAddress ||
-      !artistAddress ||
-      !content ||
-      !p2rRecordID
-    ) {
+    // Check if required fields for general messages are present
+    if (!sender_id || !fanAddress || !artistAddress || !content) {
       return res
         .status(400)
-        .json({ success: false, message: "All fields are required" });
+        .json({ success: false, message: "Required fields are missing" });
     }
+
+    // If the message is P2R-related, check for P2R-specific fields
+    if (isP2R && !p2rRecordID) {
+      return res.status(400).json({
+        success: false,
+        message: "P2R Record ID is required for P2R messages",
+      });
+    }
+
+    // Sort the participants array to ensure consistent ordering
+    const sortedParticipants = [fanAddress, artistAddress].sort();
 
     // Find or create the conversation
     let conversation = await Conversation.findOne({
-      participants: { $all: [fanAddress, artistAddress] },
+      participants: { $all: sortedParticipants },
+      participants: { $size: 2 }, // Ensure it exactly matches two participants
     });
 
     if (!conversation) {
       conversation = new Conversation({
-        participants: [fanAddress, artistAddress],
+        participants: sortedParticipants, // Save sorted participants
       });
       await conversation.save();
     }
@@ -49,24 +54,26 @@ router.post("/sendMsg", async (req, res) => {
       sender_id,
       message_content: content,
       is_read: false,
-      is_p2r: isP2R,
-      p2r_id: p2rRecordID,
+      is_p2r: isP2R || false, // If isP2R is not provided, default to false
+      p2r_id: isP2R ? p2rRecordID : null, // Set p2r_id only if isP2R is true
     });
 
     // Save the message
     await newMessage.save();
 
-    // Update the P2R Record (increment 'sent' field)
-    const updatedP2RRecord = await updateP2RField(p2rRecordID, "sent");
-    if (!updatedP2RRecord) {
-      return res
-        .status(404)
-        .json({ success: false, message: "P2R record not found" });
+    // If it's a P2R-related message, update the P2R record
+    if (isP2R) {
+      const updatedP2RRecord = await updateP2RField(p2rRecordID, "sent");
+      if (!updatedP2RRecord) {
+        return res
+          .status(404)
+          .json({ success: false, message: "P2R record not found" });
+      }
     }
 
     return res.status(201).json({
       success: true,
-      message: "Message sent successfully and P2R record updated",
+      message: "Message sent successfully",
       messageId: newMessage._id,
     });
   } catch (error) {
