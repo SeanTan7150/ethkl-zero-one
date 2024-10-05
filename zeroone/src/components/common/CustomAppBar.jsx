@@ -61,6 +61,7 @@ export default function CustomAppBar({ toggleDrawer }) {
     sessionStorage.removeItem("loggedInAddress");
     sessionStorage.removeItem("connectedAddress");
     console.log("User signed out");
+    window.location.reload();
   };
 
   useEffect(() => {
