@@ -38,7 +38,7 @@ export default function LandingPage() {
   // const handleLogin = async () => {
   //   try {
   //     const res = await fetch(
-  //       `http://localhost:5001/api/user/getUser/${sessionStorage.getItem(
+  //       `http://10.0.2.2:5001/api/user/getUser/${sessionStorage.getItem(
   //         "loggedInAddress"
   //       )}`
   //     );
@@ -65,7 +65,7 @@ export default function LandingPage() {
   // const handleRegisterUser = async (event) => {
   //   event.preventDefault();
   //   try {
-  //     const res = await fetch("http://localhost:5001/api/user/createUser", {
+  //     const res = await fetch("http://10.0.2.2:5001/api/user/createUser", {
   //       method: "POST",
   //       headers: { "Content-Type": "application/json" },
   //       body: JSON.stringify({

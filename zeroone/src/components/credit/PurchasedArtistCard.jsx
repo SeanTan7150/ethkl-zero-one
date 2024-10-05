@@ -37,7 +37,7 @@ export default function PurchasedArtistCard() {
             width: "200px",
             height: "200px",
           }}
-          src="src/assets/store/store-placeholder.jpg"
+          src="/store/store-placeholder.jpg"
         />
       </Box>
       <Typography

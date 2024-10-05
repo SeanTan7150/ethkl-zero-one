@@ -34,7 +34,7 @@ export default function HomeArtistCard({
         component="img"
         alt="green iguana"
         height="230"
-        image={artistImage ?? "src/assets/store/store-placeholder.jpg"}
+        image={artistImage ?? "/store/store-placeholder.jpg"}
       />
       <CardContent>
         <Typography

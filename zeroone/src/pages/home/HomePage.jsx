@@ -31,7 +31,7 @@ const createP2R = async () => {
 
   try {
     const response = await fetch(
-      "http://localhost:5001/api/p2r/createP2RRecord",
+      "http://10.0.2.2:5001/api/p2r/createP2RRecord",
       {
         method: "POST",
         headers: {
@@ -64,7 +64,7 @@ const sendDummyMessage = async () => {
   };
 
   try {
-    const response = await fetch("http://localhost:5000/sendMsg", {
+    const response = await fetch("http://10.0.2.2:5000/sendMsg", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

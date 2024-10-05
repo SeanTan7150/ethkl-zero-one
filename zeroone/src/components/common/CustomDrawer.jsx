@@ -51,7 +51,7 @@ export default function CustomDrawer({ open, toggleDrawer }) {
           }}
         >
           <img
-            src="public/P2Reach.png"
+            src="/P2Reach.png"
             style={{
               width: "60px",
               height: "60px",

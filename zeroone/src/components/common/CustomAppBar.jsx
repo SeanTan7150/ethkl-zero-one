@@ -2,7 +2,18 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useContext, useEffect, useState } from "react";
+import { createThirdwebClient } from "thirdweb";
+import { ConnectButton } from "thirdweb/react";
+import { useActiveWallet } from "thirdweb/react";
+import { useActiveAccount } from "thirdweb/react";
+import {
+  useAppKitProvider,
+  useAppKitAccount,
+  useAppKit,
+} from "@reown/appkit/react";
+
 import { ethers } from "ethers";
+// import { ethers } from "ethers";
 import { useNavigate } from "react-router-dom";
 import { ModalContext } from "../../context/useModalContext";
 import {
@@ -31,10 +42,33 @@ const modalStyle = {
   p: 4,
 };
 
+const client = createThirdwebClient({
+  clientId: import.meta.env.VITE_THIRD_WEB_CLIENT,
+});
+
 export default function CustomAppBar({ toggleDrawer }) {
   const { modalOpen, setModalOpen } = useContext(ModalContext);
   const [connectedAddress, setConnectedAddress] = useState(null);
   const [loggedInAddress, setLoggedInAddress] = useState(null);
+  const { address, isConnected } = useAppKitAccount();
+  const { walletProvider } = useAppKitProvider();
+  const [account, setAccount] = useState(null);
+
+  // const wallet = useActiveWallet();
+
+  const activeAccount = useActiveAccount();
+
+  // wallet?.subscribe("accountChanged", (account) => {
+  //   console.log(account);
+  //   setAccount(account);
+  // });
+
+  // useEffect(() => {
+  //   console.log(account);
+  //   console.log(activeAccount)
+  //   ;
+  //   console.log("address", activeAccount?.address);
+  // });
 
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
@@ -55,39 +89,61 @@ export default function CustomAppBar({ toggleDrawer }) {
     }
   };
 
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      try {
-        const accounts = await provider.send("eth_requestAccounts", []);
-        setConnectedAddress(accounts[0]);
-        sessionStorage.setItem("connectedAddress", accounts[0]);
-      } catch (error) {
-        console.error("Wallet connection failed: ", error);
-      }
-    } else {
-      console.error("MetaMask not installed");
-    }
-  };
+  // const connectWallet = async () => {
+  //   if (window.ethereum) {
+  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //     try {
+  //       const accounts = await provider.send("eth_requestAccounts", []);
+  //       setConnectedAddress(accounts[0]);
+  //       sessionStorage.setItem("connectedAddress", accounts[0]);
+  //     } catch (error) {
+  //       console.error("Wallet connection failed: ", error);
+  //     }
+  //   } else {
+  //     console.error("MetaMask not installed");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   connectWallet();
+  // });
+
+  // const connectWallet = async () => {
+  //   if (isConnected) {
+  //     console.log(address);
+  //     setConnectedAddress(address);
+  //     sessionStorage.setItem("connectedAddress", address);
+  //   }
+  // };
 
   const signInWithEthereum = async () => {
-    if (connectedAddress) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const message = `Sign this message to authenticate with address: ${connectedAddress}`;
+    console.log(activeAccount);
+    setConnectedAddress(activeAccount?.address);
+    sessionStorage.setItem("connectedAddress", activeAccount?.address);
+    if (activeAccount?.address) {
+      // const provider = new BrowserProvider(walletProvider);
+      // const signer = await provider.getSigner();
+      // const provider = new ethers.providers.Web3Provider(window.ethereum);
+      // const signer = provider.getSigner();
+      // const message = `Sign this message to authenticate with address: ${connectedAddress}`;
 
       try {
-        const signature = await signer.signMessage(message);
+        const signature = await activeAccount?.signMessage({
+          message: `Sign this message to authenticate with address: ${connectedAddress}`,
+        });
+
+        // const signature = await signer.signMessage(message);
         console.log("Signature:", signature);
 
         sessionStorage.setItem("loggedInAddress", connectedAddress);
         setLoggedInAddress(connectedAddress);
         console.log("User signed in, session updated");
+        // setModalOpen(op)
 
         // Check off-chain user existence
         try {
           const res = await fetch(
-            `http://localhost:5001/api/user/getUser/${sessionStorage.getItem(
+            `http://10.0.2.2:5001/api/user/getUser/${sessionStorage.getItem(
               "loggedInAddress"
             )}`
           );
@@ -119,7 +175,7 @@ export default function CustomAppBar({ toggleDrawer }) {
   const handleRegisterUser = async (event) => {
     event.preventDefault();
     try {
-      const res = await fetch("http://localhost:5001/api/user/createUser", {
+      const res = await fetch("http://10.0.2.2:5001/api/user/createUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -180,7 +236,7 @@ export default function CustomAppBar({ toggleDrawer }) {
               component="div"
               sx={{ flexGrow: 1 }}
             ></Typography>
-            {connectedAddress ? (
+            {activeAccount?.address ? (
               <div>
                 {sessionStorage.getItem("loggedInAddress") ? (
                   <button onClick={signOut}>Sign Out</button>
@@ -189,7 +245,12 @@ export default function CustomAppBar({ toggleDrawer }) {
                 )}
               </div>
             ) : (
-              <button onClick={connectWallet}>Connect Wallet</button>
+              // <button onClick={connectWallet}>
+              //   {" "}
+              //   {/* <w3m-button />
+              //    */}
+              // </button>
+              <ConnectButton client={client} />
             )}
           </Toolbar>
         </AppBar>

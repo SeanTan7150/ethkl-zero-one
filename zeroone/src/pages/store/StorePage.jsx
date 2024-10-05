@@ -164,7 +164,7 @@ const creditInfo = [
     description: "0.001 ETH (~$2.32)",
     eth: 0.001,
     price: 2.32,
-    image: "src/assets/store/one-credit.png",
+    image: "/store/one-credit.png",
     val: 1,
   },
   {
@@ -172,7 +172,7 @@ const creditInfo = [
     description: "0.0025 ETH (~$5.90)",
     eth: 0.0025,
     price: 5.9,
-    image: "src/assets/store/five-credit-two.png",
+    image: "/store/five-credit-two.png",
     val: 3,
   },
   {
@@ -180,7 +180,7 @@ const creditInfo = [
     description: "0.004 ETH (~$9.44)",
     eth: 0.004,
     price: 9.44,
-    image: "src/assets/store/five-credit.png",
+    image: "/store/five-credit.png",
     val: 5,
   },
 ];
@@ -191,7 +191,7 @@ const timeToReachInfo = [
     description: "Free",
     eth: 0,
     price: 0,
-    image: "src/assets/store/bicycle-meme-2.png",
+    image: "/store/bicycle-meme-2.png",
     val: "slow",
   },
   {
@@ -199,7 +199,7 @@ const timeToReachInfo = [
     description: "0.00005 ETH (~$0.16)",
     eth: 0.00005,
     price: 0.16,
-    image: "src/assets/store/flying-myvi.png",
+    image: "/store/flying-myvi.png",
     val: "average",
   },
   {
@@ -207,7 +207,7 @@ const timeToReachInfo = [
     description: "0.0001 ETH (~$0.23)",
     eth: 0.0001,
     price: 0.23,
-    image: "src/assets/store/fast-meme.png",
+    image: "/store/fast-meme.png",
     val: "fast",
   },
 ];
@@ -374,7 +374,7 @@ export default function StorePage() {
   React.useEffect(() => {
     const fetchArtists = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/user/getArtists");
+        const res = await fetch("http://10.0.2.2:5001/api/user/getArtists");
         if (!res.ok) {
           throw new Error("Failed to fetch artists");
         }

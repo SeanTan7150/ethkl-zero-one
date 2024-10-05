@@ -1,7 +1,7 @@
 import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
 
 const handleVerify = async (proof) => {
-  const res = await fetch("http://localhost:5001/api/auth/verify", {
+  const res = await fetch("http://10.0.2.2:5001/api/auth/verify", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +21,7 @@ const onSuccess = async () => {
 
   try {
     const res = await fetch(
-      `http://localhost:5001/api/user/updateUser/${loggedInAddress}`,
+      `http://10.0.2.2:5001/api/user/updateUser/${loggedInAddress}`,
       {
         method: "PUT",
         headers: {

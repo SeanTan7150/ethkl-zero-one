@@ -29,7 +29,7 @@ export default function StoreArtistCard({
         component="img"
         alt="green iguana"
         height="230"
-        image={image ?? "src/assets/store/store-placeholder.jpg"}
+        image={image ?? "/store/store-placeholder.jpg"}
       />
       <CardContent>
         <Typography

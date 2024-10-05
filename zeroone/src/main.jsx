@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { ThirdwebProvider } from "thirdweb/react";
 import { StrictMode } from "react";
 import App from "./App.jsx";
 import "./index.css";
@@ -21,7 +22,8 @@ import {
 } from "react-router-dom";
 
 import { createAppKit } from "@reown/appkit/react";
-import { EthersAdapter } from "@reown/appkit-adapter-ethers";
+// import { EthersAdapter } from "@reown/appkit-adapter-ethers";
+import { Ethers5Adapter } from "@reown/appkit-adapter-ethers5";
 import { arbitrum, mainnet } from "@reown/appkit/networks";
 
 // 1. Get projectId
@@ -31,7 +33,7 @@ const projectId = import.meta.env.VITE_WALLET_CONNECT_ID;
 const networks = [arbitrum, mainnet];
 
 createAppKit({
-  adapters: [new EthersAdapter()],
+  adapters: [new Ethers5Adapter()],
   networks,
   projectId,
   // features: {
@@ -81,6 +83,9 @@ createRoot(document.getElementById("root")).render(
   <ContractContextProvider>
     {/* <App />
      */}
-    <RouterProvider router={router} />
+
+    <ThirdwebProvider>
+      <RouterProvider router={router} />
+    </ThirdwebProvider>
   </ContractContextProvider>
 );

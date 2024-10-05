@@ -13,7 +13,7 @@ export default function HomeGenreCard() {
       <CardMedia
         component="img"
         sx={{ width: 80 }}
-        image="src/assets/store/store-placeholder.jpg"
+        image="/store/store-placeholder.jpg"
         alt="Live from space album cover"
       />
       <Box

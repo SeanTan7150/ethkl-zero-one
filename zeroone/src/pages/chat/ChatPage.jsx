@@ -53,7 +53,7 @@ export default function ChatPage() {
     const fetchUserData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5001/api/user/getUser/${profileAddress}`
+          `http://10.0.2.2:5001/api/user/getUser/${profileAddress}`
         );
         if (!res.ok) {
           throw new Error("Failed to fetch user data");
@@ -94,7 +94,7 @@ export default function ChatPage() {
     const fetchConversations = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/conversation/getConversation/${loggedInAddress}`, // Address in URL
+          `http://10.0.2.2:5001/api/conversation/getConversation/${loggedInAddress}`, // Address in URL
           {
             method: "GET",
           }

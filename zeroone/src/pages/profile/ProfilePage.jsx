@@ -59,7 +59,7 @@ export default function ProfilePage() {
     const fetchUserData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5001/api/user/getUser/${profileAddress}`
+          `http://10.0.2.2:5001/api/user/getUser/${profileAddress}`
         );
         if (!res.ok) {
           throw new Error("Failed to fetch user data");
@@ -85,7 +85,7 @@ export default function ProfilePage() {
       // update off chain
       try {
         const res = await fetch(
-          `http://localhost:5001/api/user/updateUser/${profileAddress}`,
+          `http://10.0.2.2:5001/api/user/updateUser/${profileAddress}`,
           {
             method: "PUT",
             headers: {
