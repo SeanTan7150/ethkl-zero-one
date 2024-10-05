@@ -63,3 +63,51 @@ export const sidebarDown = {
     url: "/subscription",
   },
 };
+
+export const creditInfo = [
+  {
+    label: "1 Credit",
+    description: "0.001 ETH (~$2.32)",
+    eth: 0.001,
+    price: 2.32,
+    image: "src/assets/store/one-credit.png",
+  },
+  {
+    label: "3 Credits",
+    description: "0.0025 ETH (~$5.90)",
+    eth: 0.0025,
+    price: 5.9,
+    image: "src/assets/store/five-credit-two.png",
+  },
+  {
+    label: "5 Credits",
+    description: "0.004 ETH (~$9.44)",
+    eth: 0.004,
+    price: 9.44,
+    image: "src/assets/store/five-credit.png",
+  },
+];
+
+export const timeToReachInfo = [
+  {
+    label: "Slow (~ 3 Days)",
+    description: "Free",
+    eth: 0,
+    price: 0,
+    image: "src/assets/store/bicycle-meme-2.png",
+  },
+  {
+    label: "Average (~ 2 Days)",
+    description: "0.00005 ETH (~$0.16)",
+    eth: 0.00005,
+    price: 0.16,
+    image: "src/assets/store/flying-myvi.png",
+  },
+  {
+    label: "Fast (~ Within 1 Day)",
+    description: "0.0001 ETH (~$0.23)",
+    eth: 0.0001,
+    price: 0.23,
+    image: "src/assets/store/fast-meme.png",
+  },
+];
