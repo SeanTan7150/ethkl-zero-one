@@ -7,3 +7,4 @@ export { default as StoreTimeCard } from "./store/StoreTimeCard";
 export { default as PurchaseModal } from "./store/PurchaseModal";
 export { default as HomeGenreCard } from "./home/HomeGenreCard";
 export { default as HomeArtistCard } from "./home/HomeArtistCard";
+export { default as EditProfile } from "./editProfile/EditProfile";

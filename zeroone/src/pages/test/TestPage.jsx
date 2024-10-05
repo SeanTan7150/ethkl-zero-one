@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useContractContext } from "../../context";
+import { ethers } from "ethers";
 
 export default function TestPage() {
   const [artistName, setArtistName] = useState("");
@@ -23,12 +24,19 @@ export default function TestPage() {
   const [refundCreditNumberOfRefunds, setRefundCreditNumberOfRefunds] =
     useState(0);
 
+  const [latestID, setLatestID] = useState(0);
+
+  const [oraEstimateGasModelID, setOraEstimateGasModelID] = useState("");
+  const [oraEstimateGasResult, setOraEstimateGasResult] = useState(0);
+
   const {
     registerNewArtist,
     artistSetPrice,
     buyCredit,
     claimRewards,
     refundCredits,
+    getLatestP2RID,
+    getGasFeesEstimation,
   } = useContractContext();
 
   const handleRegisterNewArtist = async (event) => {
@@ -92,6 +100,24 @@ export default function TestPage() {
     try {
       await refundCredits(refundCreditP2RID, refundCreditNumberOfRefunds);
       console.log("Credit refunded successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleGetLatestP2RID = async () => {
+    try {
+      const latestid = await getLatestP2RID();
+      setLatestID(ethers.BigNumber.from(latestid).toString());
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleEstimateGas = async () => {
+    try {
+      const fee = await getGasFeesEstimation(oraEstimateGasModelID);
+      setOraEstimateGasResult(ethers.BigNumber.from(fee).toString());
     } catch (error) {
       console.error(error);
     }
@@ -308,6 +334,27 @@ export default function TestPage() {
       </form>
 
       <hr />
+
+      <button onClick={handleGetLatestP2RID}>Get Latest P2R ID</button>
+      {latestID ? <div>Latest ID: {latestID}</div> : null}
+
+      <hr />
+
+      <h2>Ora Zone</h2>
+
+      <input
+        type="text"
+        required
+        autoComplete="off"
+        value={oraEstimateGasModelID}
+        onChange={(e) => {
+          setOraEstimateGasModelID(e.target.value);
+        }}
+      />
+      <button onClick={handleEstimateGas}>Get gas fee estimation</button>
+      {oraEstimateGasResult ? (
+        <div>Gas fees required: {oraEstimateGasResult}</div>
+      ) : null}
     </>
   );
 }

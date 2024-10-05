@@ -13,6 +13,7 @@ import {
   Modal,
 } from "@mui/material";
 import { ModalContext } from "../../context/useModalContext";
+import { BorderLeft } from "@mui/icons-material";
 // import { useNavigate } from "react-router-dom";
 
 const modalStyle = {
@@ -90,134 +91,69 @@ export default function LandingPage() {
 
   return (
     <>
-      <Box
+      <Grid
+        container
         style={{
           width: "100%",
-          height: "100%",
+          height: "100vh",
           display: "flex",
-          justifyContent: "center",
           alignItems: "center",
         }}
       >
-        {/* <Button
-          variant="contained"
-          color="primary"
-          onClick={async () => {
-            const isUserFound = await handleLogin();
-            if (isUserFound) {
-              navigate("/home"); // Redirect to the home page if user is found
-            } else {
-              setModalOpen(true); // Keep the modal open if user is not found
-            }
-          }}
-          sx={{
-            mr: 2,
-            backgroundColor: "#333",
-            color: "#fff",
-            fontWeight: "bold",
-            px: 6,
-            py: 1,
-            borderRadius: "10px",
+        <Grid
+          item
+          xs={12}
+          md={6}
+          style={{
+            paddingLeft: 40,
           }}
         >
-          Login
-        </Button> */}
-      </Box>
-      {/* <Modal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-        }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={modalStyle}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              alignItems: "start",
+          <Typography
+            variant="h2"
+            style={{
+              fontWeight: "bolder",
+              fontSize: 40,
+              textAlign: "left",
+              marginBottom: 20,
             }}
           >
-            <Typography
-              variant="h5"
-              sx={{
-                fontWeight: "bold",
-                mb: 3,
-              }}
-            >
-              Register Profile
-            </Typography>
-            <TextField
-              sx={{
-                minWidth: "600px",
-                mb: 3,
-              }}
-              required
-              id="outlined-required"
-              label="Username"
-              defaultValue={username}
-              placeholder="Your Username"
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
-              autoComplete="off"
-            />
-            <TextField
-              sx={{
-                minWidth: "600px",
-                mb: 3,
-              }}
-              required
-              id="outlined-required"
-              label="Profile Image"
-              defaultValue={img}
-              placeholder="Your Image"
-              onChange={(e) => {
-                setImg(e.target.value);
-              }}
-              autoComplete="off"
-            />
-            <TextField
-              sx={{
-                minWidth: "600px",
-                mb: 3,
-              }}
-              id="outlined-multiline-static"
-              label="Your Bio"
-              multiline
-              rows={4}
-              defaultValue={bio}
-              placeholder="Enter your bio here"
-              onChange={(e) => {
-                setBio(e.target.value);
-              }}
-              autoComplete="off"
-              required
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setModalOpen(true);
-                handleRegisterUser(event);
-              }}
-              sx={{
-                mr: 2,
-                backgroundColor: "#333",
-                color: "#fff",
-                fontWeight: "bold",
-                px: 6,
-                py: 1,
-                borderRadius: "10px",
-              }}
-            >
-              Register
-            </Button>
-          </Box>
-        </Box>
-      </Modal> */}
+            Money Talks, Celebrities Reply!
+          </Typography>
+          <Typography
+            variant="h5"
+            style={{
+              fontWeight: "bold",
+              fontSize: 25,
+              textAlign: "left",
+              marginBottom: 30,
+            }}
+          >
+            "Why DM when you can P2R? Verified stars, real conversations, and
+            rewards for their witty comebacks. Your fandom just got an upgrade!"
+          </Typography>
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          md={6}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Box
+            component="img"
+            src="landing-page-illustration.png"
+            alt="Illustration"
+            style={{
+              width: "80%",
+              maxWidth: "800px",
+            }}
+          />
+        </Grid>
+      </Grid>
     </>
   );
 }

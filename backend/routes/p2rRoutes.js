@@ -3,6 +3,26 @@ import P2RRecord from "../models/p2rRecord.js";
 
 const router = express.Router();
 
+// Get P2RRecords based on address
+router.get("/getP2RRecord/:address", async (req, res) => {
+  const { address } = req.params;
+
+  try {
+    const records = await P2RRecord.find({
+      $or: [{ user_address: address }, { artist_address: address }],
+    });
+
+    if (records.length === 0) {
+      return res.status(404).json({ error: "No records found" });
+    }
+    return res.status(200).json(records);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Error fetching records", details: error.message });
+  }
+});
+
 // POST API to create a P2R Record
 router.post("/createP2RRecord", async (req, res) => {
   const { p2rRecordID, user_address, artist_address, credit, type } = req.body;
@@ -39,9 +59,7 @@ router.post("/createP2RRecord", async (req, res) => {
       p2rRecord: newP2RRecord,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to create P2R record" });
+    return res.status(500).json({ success: false, message: error });
   }
 });
 

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 
 import {
@@ -47,6 +47,7 @@ import {
 import { ModalContext } from "../../context/useModalContext";
 import { useContractContext } from "../../context";
 import { useNavigate } from "react-router-dom";
+import { ethers } from "ethers";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -369,7 +370,7 @@ function SummaryTableComponent({ selectedCredit, selectedTime }) {
 export default function StorePage() {
   const [allArtists, setAllArtists] = React.useState([]);
 
-  const { buyCredit } = useContractContext();
+  const { buyCredit, getLatestP2RID } = useContractContext();
 
   React.useEffect(() => {
     const fetchArtists = async () => {
@@ -463,10 +464,41 @@ export default function StorePage() {
         selectedCredit.eth + selectedTime.eth
       );
       console.log("Credit purchased successfully");
-      navigate("/chat");
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
+
+    const latestP2RID = await getLatestP2RID();
+
+    // Insert P2R record to off chain
+    const insertData = {
+      p2r_id: ethers.BigNumber.from(latestP2RID).toString(),
+      user_address: sessionStorage.getItem("loggedInAddress"),
+      artist_address: selectedArtistAddress,
+      credit: selectedCredit.val,
+      type: selectedTime.val,
+    };
+
+    const response = await fetch(
+      "http://localhost:5001/api/p2r/createP2RRecord",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(insertData),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log("P2R Record created successfully:", data.p2rRecord);
+    } else {
+      console.log("Error creating P2R Record:", data.message);
+    }
+
+    navigate("/chat");
   };
 
   const handleBack = () => {

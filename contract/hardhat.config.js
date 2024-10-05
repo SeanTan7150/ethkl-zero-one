@@ -13,6 +13,10 @@ module.exports = {
       url: "https://sepolia-rpc.scroll.io/",
       accounts: [`0x${PRIVATE_KEY}`],
     },
+    manta: {
+      url: "https://pacific-rpc.sepolia-testnet.manta.network/http",
+      chainId: 3441006,
+    },
   },
   settings: {
     optimizer: {

@@ -1,11 +1,13 @@
 import { ethers } from "ethers";
 import { useContext, createContext } from "react";
 import { contractABI } from "../contract/contractABI";
+import { oraABI } from "../contract/oraABI";
 
 const ContractContext = createContext();
 
 export const ContractContextProvider = ({ children }) => {
   const contractAddress = "0x06cd47372F721c9991efe6eEED75B43552dD24f0";
+  const oraContractAddress = "0xD7139A06E7ECF7a87781371762BAab8C3Fbb44F3";
 
   const dbg = async () => {
     return "Hello World Debug";
@@ -193,6 +195,26 @@ export const ContractContextProvider = ({ children }) => {
     }
   };
 
+  // ORA ZONE
+  const getGasFeesEstimation = async (modelId) => {
+    try {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          oraContractAddress,
+          oraABI,
+          provider
+        );
+
+        const fee = await contract.estimateFee(modelId);
+        return fee;
+      }
+    } catch (error) {
+      console.error("Transaction failed: ", error);
+      return 0;
+    }
+  };
+
   return (
     <ContractContext.Provider
       value={{
@@ -203,6 +225,7 @@ export const ContractContextProvider = ({ children }) => {
         claimRewards,
         refundCredits,
         getLatestP2RID,
+        getGasFeesEstimation,
       }}
     >
       {children}

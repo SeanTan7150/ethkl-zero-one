@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { PurchasedArtistCard } from "../../components";
 
@@ -15,13 +15,23 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import { useContractContext } from "../../context";
 
-function createData(name, transaction, timestamp, amount, credit, remaning) {
-  return { name, transaction, timestamp, amount, credit, remaning };
+function createData(
+  id,
+  name,
+  transaction,
+  timestamp,
+  amount,
+  credit,
+  remaning
+) {
+  return { id, name, transaction, timestamp, amount, credit, remaning };
 }
 
 const rows = [
   createData(
+    "1",
     "Justin Bieber",
     "0x69e75a2346ae86c1c70f91216e464811a99ed87f",
     "22/11/24 14:00",
@@ -144,7 +154,7 @@ function PurchaseArtistTab() {
   );
 }
 
-function PurchaseHistoryTab() {
+function PurchaseHistoryTab({ p2rs, claimRewards }) {
   return (
     <>
       <TableContainer component={Box}>
@@ -172,7 +182,21 @@ function PurchaseHistoryTab() {
                 <TableCell align="right">{row.timestamp}</TableCell>
                 <TableCell align="right">{row.amount}</TableCell>
                 <TableCell align="right">{row.credit}</TableCell>
-                <TableCell align="right">{row.remaning}</TableCell>
+                {/* <TableCell align="right">{row.remaning}</TableCell> */}
+                <TableCell align="right">
+                  <button
+                    onClick={async () => {
+                      try {
+                        await claimRewards(row.id, row.credit);
+                        console.log("Reward claimed successfully");
+                      } catch (error) {
+                        console.error(error);
+                      }
+                    }}
+                  >
+                    Claim Reward
+                  </button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -197,6 +221,29 @@ function a11yProps(index) {
 
 export default function CreditPage() {
   const [value, setValue] = React.useState(0);
+  const [p2rRecords, setP2RRecords] = useState([]);
+
+  const { claimRewards } = useContractContext();
+
+  useEffect(() => {
+    const fetchP2RData = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5001/api/p2r/getP2RRecord/${sessionStorage.getItem(
+            "loggedInAddress"
+          )}`
+        );
+        if (!res.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        const data = await res.json();
+        setP2RRecords(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchP2RData();
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -229,7 +276,7 @@ export default function CreditPage() {
             <PurchaseArtistTab />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <PurchaseHistoryTab />
+            <PurchaseHistoryTab p2rs={p2rRecords} claimRewards={claimRewards} />
           </CustomTabPanel>
         </Box>
       </Box>

@@ -22,6 +22,7 @@ import {
 import VerifiedButton from "../../components/worldcoin/VerifyButton";
 import { useContractContext } from "../../context";
 import { ModalContext } from "../../context/useModalContext";
+import { EditProfile } from "../../components";
 
 const modalStyle = {
   position: "absolute",
@@ -394,6 +395,9 @@ export default function ProfilePage() {
             )}
           </Card>
         </Paper>
+        {profileAddress == sessionStorage.getItem("loggedInAddress") ? (
+          <EditProfile />
+        ) : null}
       </Box>
 
       <Modal
