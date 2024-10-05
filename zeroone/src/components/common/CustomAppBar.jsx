@@ -103,7 +103,8 @@ export default function CustomAppBar({ toggleDrawer }) {
               )}
             </div>
           ) : (
-            <button onClick={connectWallet}>Connect Wallet</button>
+            <w3m-button />
+            // <button onClick={connectWallet}>Connect Wallet</button>
           )}
         </Toolbar>
       </AppBar>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">zero</string>
+    <string name="title_activity_main">zero</string>
+    <string name="package_name">com.zero.app</string>
+    <string name="custom_url_scheme">com.zero.app</string>
+</resources>

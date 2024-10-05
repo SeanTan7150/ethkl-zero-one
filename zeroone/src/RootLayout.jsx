@@ -9,6 +9,7 @@ import InputBase from "@mui/material/InputBase";
 import { Outlet, useLocation } from "react-router-dom";
 import { matchPathName } from "./utils";
 import { useState } from "react";
+
 import { ModalContext } from "./context/useModalContext";
 
 // const Search = styled("div")(({ theme }) => ({
@@ -49,6 +50,10 @@ import { ModalContext } from "./context/useModalContext";
 //     },
 //   },
 // }));
+
+// function ConnectButton() {
+//   return ;
+// }
 
 export default function RootLayout() {
   const location = useLocation();

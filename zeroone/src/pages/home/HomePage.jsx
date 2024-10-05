@@ -31,7 +31,7 @@ export default function HomePage() {
   React.useEffect(() => {
     const fetchArtists = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/user/getArtists");
+        const res = await fetch("http://10.0.2.2:5001/api/user/getArtists");
         if (!res.ok) {
           throw new Error("Failed to fetch artists");
         }

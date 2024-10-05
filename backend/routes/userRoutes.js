@@ -81,6 +81,8 @@ router.get("/getArtists", async (req, res) => {
       return res.status(404).json({ message: "No artists found" });
     }
 
+    console.log(artists);
+
     return res.status(200).json(artists);
   } catch (error) {
     return res
