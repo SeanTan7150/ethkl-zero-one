@@ -80,8 +80,12 @@ button:focus-visible {
   background-color: transparent;
 }
 
-.list-contact:hover{
+.list-contact:hover, .home-artist:hover{
   cursor: pointer;
+}
+
+.home-artist:hover{
+  opacity: 70%;
 }
 
 .opacity-full {

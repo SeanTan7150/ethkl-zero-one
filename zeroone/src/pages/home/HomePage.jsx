@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { HomeGenreCard, HomeArtistCard } from "../../components";
 
 import {
   Box,
@@ -56,40 +57,79 @@ export default function HomePage() {
           marginRight: "auto",
         }}
       >
-        <Box sx={{ p: 3, mb: 3, backgroundColor: "#fff", borderRadius: "8px" }}>
+        <Box
+          sx={{
+            p: 3,
+            mb: 3,
+            backgroundColor: "#fff",
+            borderRadius: "8px",
+            mx: "auto",
+          }}
+        >
           <Typography
             variant="h5"
             sx={{
               fontWeight: "bold",
               textAlign: "start",
+              mb: 3,
             }}
           >
             GM
           </Typography>
-          <Box>
-            <Card sx={{ display: "flex", maxWidth: "300px", height: "80px" }}>
-              <CardMedia
-                component="img"
-                sx={{ width: 80 }}
-                image="src/assets/store/store-placeholder.jpg"
-                alt="Live from space album cover"
-              />
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <CardContent sx={{ flex: "1 0 auto" }}>
-                  <Typography component="div" variant="h5">
-                    Live From Space
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    component="div"
-                    sx={{ color: "text.secondary" }}
-                  >
-                    Mac Miller
-                  </Typography>
-                </CardContent>
-              </Box>
-            </Card>
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              gap: "20px",
+              flexWrap: "wrap",
+              mb: 8,
+            }}
+          >
+            {[...Array(6)].map((_, index) => (
+              <HomeGenreCard key={index} />
+            ))}
           </Box>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              textAlign: "start",
+              mb: 3,
+            }}
+          >
+            Recent Artist
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              gap: "20px",
+              flexWrap: "wrap",
+              mb: 8,
+            }}
+          >
+            {allArtists.map((artist, index) => (
+              // <HomeGenreCard key={index} />
+              <HomeArtistCard
+                key={index}
+                artistImage={artist.profile_pic_url}
+                artistName={artist.username}
+                onNavigate={() => {
+                  handleViewProfile(artist.address);
+                }}
+              />
+            ))}
+          </Box>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              textAlign: "start",
+              mb: 3,
+            }}
+          >
+            Discover new artist
+          </Typography>
         </Box>
       </Box>
     </>
