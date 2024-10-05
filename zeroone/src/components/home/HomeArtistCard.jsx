@@ -28,6 +28,9 @@ export default function HomeArtistCard({
       }}
     >
       <CardMedia
+        sx={{
+          backgroundColor: "#fff",
+        }}
         component="img"
         alt="green iguana"
         height="230"
