@@ -6,6 +6,7 @@ const router = express.Router();
 
 // GET API to fetch conversation by address
 router.get("/getConversation/:address", async (req, res) => {
+  console.log(req.params);
   const { address } = req.params; // Get address from URL parameters
 
   try {
@@ -14,13 +15,17 @@ router.get("/getConversation/:address", async (req, res) => {
       participants: { $in: [address] },
     });
 
+    console.log(conversations);
+
     if (conversations.length === 0) {
+      console.log("HIT");
       return res.status(404).json({
         success: false,
         message: "No conversations found for this address",
       });
     }
 
+    console.log("HIT2");
     return res.status(200).json({
       success: true,
       conversations,
@@ -38,6 +43,7 @@ router.get("/getConversation/:address", async (req, res) => {
 router.get("/conversationMsg/:conversationId", async (req, res) => {
   const { conversationId } = req.params;
 
+  console.log(conversationId);
   try {
     // Find messages associated with the provided conversation ID
     const messages = await Message.find({ conversation_id: conversationId })
@@ -45,6 +51,7 @@ router.get("/conversationMsg/:conversationId", async (req, res) => {
       .populate("reply_to") // Populate the reply message if needed
       .sort({ sent_at: 1 }); // Sort messages by sent time in ascending order
 
+    console.log(messages);
     return res.status(200).json({
       success: true,
       messages,

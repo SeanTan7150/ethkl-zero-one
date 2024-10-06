@@ -15,17 +15,116 @@ import {
   ListItemAvatar,
   Paper,
   Button,
+  Modal,
   IconButton,
 } from "@mui/material";
+import {
+  StoreArtistCard,
+  StoreCreditCard,
+  StoreTimeCard,
+} from "../../components";
 import { Search, Verified } from "@mui/icons-material";
 import SendIcon from "@mui/icons-material/Send";
 import { SenderMessage, ReplyMessage, PurchaseModal } from "../../components";
 
+const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 1000,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  borderRadius: "10px",
+  p: 4,
+};
+
+const thirdModalStyle = {
+  ...modalStyle,
+  height: 600,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  alignItems: "center",
+  p: 6,
+};
+
+// const timeToReachInfo = [
+//   {
+//     label: "Slow (~ 3 Days)",
+//     description: "Free",
+//     eth: 0,
+//     price: 0,
+//     image: "src/assets/store/bicycle-meme-2.png",
+//   },
+//   {
+//     label: "Average (~ 2 Days)",
+//     description: "0.00005 ETH (~$0.16)",
+//     eth: 0.00005,
+//     price: 0.16,
+//     image: "src/assets/store/flying-myvi.png",
+//   },
+//   {
+//     label: "Fast (~ Within 1 Day)",
+//     description: "0.0001 ETH (~$0.23)",
+//     eth: 0.0001,
+//     price: 0.23,
+//     image: "src/assets/store/fast-meme.png",
+//   },
+// ];
+
+function TimeToReachComponent({ activeTime, setActiveTime, onSelectTime }) {
+  return (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+
+          my: 5,
+          maxWidth: "90%",
+          mx: "auto",
+          gap: "30px",
+          flexWrap: "wrap",
+        }}
+      >
+        {timeToReachInfo.map((obj, index) => (
+          <StoreTimeCard
+            image={obj.image}
+            key={index}
+            isActive={activeTime === index ? true : false}
+            label={obj.label}
+            description={obj.description}
+            onPressCard={() => {
+              setActiveTime(index);
+              onSelectTime(obj);
+              console.log(activeTime);
+            }}
+          />
+        ))}
+      </Box>
+    </>
+  );
+}
+
 export default function ChatPage() {
   const loggedInAddress = sessionStorage.getItem("loggedInAddress");
+  console.log("LOG IN");
+  console.log(loggedInAddress);
+
+  // Index
+  const [sendMessageTime, setSendMessageTime] = useState(0);
+  const [selectedMessageTime, setSelectedMessageTime] = useState(
+    timeToReachInfo[0]
+  );
 
   const { modalOpen, setModalOpen } = useContext(ModalContext);
 
+  const [secondModal, setSecondModal] = useState(false);
+  const [firstModal, setFirstModal] = useState(false);
+  const [thirdModal, setThirdModal] = useState(false);
+
+  const [reply, setSelectReply] = useState({ id: "", message: "" });
+  const [replyActive, isReplyActive] = useState(false);
   const [message, setMessage] = React.useState("");
   const [activeContact, setActiveContact] = React.useState(0);
   const [chatMessages, setChatMessages] = useState([]);
@@ -39,6 +138,8 @@ export default function ChatPage() {
     slow: { creditRemaining: 0, p2rRecords: [] },
   });
   const [remainingCreditsDisplay, setRemainingCreditsDisplay] = useState("");
+
+  console.log(remainingCreditsDisplay);
 
   useEffect(() => {
     // Organizing the remaining credit by type
@@ -131,6 +232,7 @@ export default function ChatPage() {
           const data = await response.json();
 
           if (data.success) {
+            console.log("SUCCESS");
             const allConversation = data.conversations;
             const targetUserAddress = allConversation[0].participants.find(
               (p) => p !== loggedInAddress
@@ -149,10 +251,12 @@ export default function ChatPage() {
 
             // Fetch messages for the first conversation after the conversation is loaded
             if (allConversation[0]?._id) {
+              console.log("ALL");
+              console.log(allConversation[0]._id);
               await fetchMessages(allConversation[0]._id);
               const remainingCredit = await fetchRemainingCredit(
-                allConversation[0].participants[0],
-                allConversation[0].participants[1]
+                allConversation[0].participants[1],
+                allConversation[0].participants[0]
               );
               calculateRemainingCredits(remainingCredit);
             }
@@ -196,6 +300,8 @@ export default function ChatPage() {
       // Fetch conversations first, then fetch URL address
       await fetchConversations();
       await fetchURLAddress();
+      // await fetchRemainingCredit();
+      // calculateRemainingCredits();
     };
 
     fetchData();
@@ -203,6 +309,8 @@ export default function ChatPage() {
   }, [loggedInAddress]);
 
   const fetchMessages = async (conversationId) => {
+    console.log("FETCH MESSAGES FUNC");
+    console.log(conversationId);
     if (!conversationId) {
       console.warn("No valid conversation ID found.");
       return;
@@ -247,17 +355,19 @@ export default function ChatPage() {
   const onChangeActiveContact = async (index) => {
     setActiveContact(index);
     const conversationId = chatMessages[index]?.conversation?._id;
-    if (conversationId) {
-      await fetchMessages(conversationId); // Fetch messages only if conversationId is available
-    }
+
+    // if (conversationId) {
+    await fetchMessages(conversationId); // Fetch messages only if conversationId is available
+    // }
     const remainingCredit = await fetchRemainingCredit(
-      conversationId.address,
-      loggedInAddress
+      loggedInAddress,
+
+      conversationId.address
     );
     calculateRemainingCredits(remainingCredit);
   };
 
-  const onSendMessage = async () => {
+  const onSendMessage = async (p2rRecordID) => {
     const send_id = await fetchTargetUser(loggedInAddress);
 
     const msgData = {
@@ -266,7 +376,8 @@ export default function ChatPage() {
       artistAddress: chatMessages[activeContact].address,
       content: message,
       isP2R: true,
-      p2rRecordID: creditByType.average.p2rRecords[0], /// Based on the user selection on the credit get [0] of that type on the p2rRecords
+      // p2rRecordID: creditByType.average.p2rRecords[0], /// Based on the user selection on the credit get [0] of that type on the p2rRecords
+      p2rRecordID: p2rRecordID,
     };
 
     try {
@@ -325,6 +436,8 @@ export default function ChatPage() {
 
       if (response.ok) {
         console.log("Reply sent successfully:", result);
+        setThirdModal(false);
+        setModalOpen(false);
         // Optionally update the UI or notify the user here
       } else {
         console.error("Failed to send reply:", result.message);
@@ -496,6 +609,7 @@ export default function ChatPage() {
                   style={{ marginLeft: 10 }}
                   onClick={() => {
                     setModalOpen(true);
+                    setFirstModal(true);
                   }}
                 >
                   Buy Credit
@@ -546,6 +660,13 @@ export default function ChatPage() {
                     is_p2r={msg.is_p2r}
                     direction="start"
                     message={msg.message_content}
+                    onSelectReply={() => {
+                      setSelectReply({
+                        id: msg._id,
+                        message: msg.message_content,
+                      });
+                      isReplyActive(true);
+                    }}
                   />
                 )}
               </div>
@@ -566,6 +687,30 @@ export default function ChatPage() {
               backgroundColor: "#ECE6F0",
             }}
           >
+            {replyActive && (
+              <Box
+                sx={{
+                  mb: 2,
+                }}
+              >
+                <Typography
+                  sx={{
+                    textAlign: "start",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Replying to:
+                  <span
+                    style={{
+                      fontWeight: "medium",
+                    }}
+                  >
+                    {" "}
+                    {reply.message}
+                  </span>
+                </Typography>
+              </Box>
+            )}
             <TextField
               fullWidth
               // variant="outlined"
@@ -585,7 +730,19 @@ export default function ChatPage() {
                 disableUnderline: true,
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={onSendMessage}>
+                    <IconButton
+                      // onClick={onSendMessage}
+                      onClick={() => {
+                        if (replyActive) {
+                          setThirdModal(true);
+                          setModalOpen(true);
+                          return;
+                        }
+
+                        setSecondModal(true);
+                        setModalOpen(true);
+                      }}
+                    >
                       {/* <ChatBubbleOutline />
                        */}
                       <SendIcon />
@@ -598,9 +755,10 @@ export default function ChatPage() {
         </div>
       </div>
       <PurchaseModal
-        modalOpen={modalOpen}
+        modalOpen={firstModal}
         setModalOpen={() => {
           setModalOpen(false);
+          setFirstModal(false);
         }}
         activeCard={activeCard}
         selectedCredit={selectedCredit}
@@ -620,6 +778,90 @@ export default function ChatPage() {
           console.log(newTime);
         }}
       />
+      <Modal
+        open={secondModal}
+        onClose={() => {
+          setSecondModal(false);
+          setModalOpen(false);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography variant="h6">Select Message Time</Typography>
+          <TimeToReachComponent
+            activeTime={sendMessageTime}
+            setActiveTime={(index) => {
+              setSendMessageTime(index);
+            }}
+            onSelectTime={(obj) => {
+              setSelectedMessageTime(obj);
+            }}
+          />
+          <Button
+            variant="outlined"
+            style={{ marginLeft: "auto" }}
+            onClick={() => {
+              const p2r = creditByType[selectedMessageTime.title];
+              if (p2r.creditRemaining < 0) return;
+              const p2rRecordId =
+                creditByType[selectedMessageTime.title].p2rRecords[0];
+              onSendMessage(p2rRecordId);
+            }}
+          >
+            Send
+          </Button>
+        </Box>
+      </Modal>
+      <Modal
+        open={thirdModal}
+        onClose={() => {
+          setThirdModal(false);
+          setModalOpen(false);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={thirdModalStyle}>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: "bold",
+                fontSize: "40px",
+              }}
+            >
+              Terms & Condition
+            </Typography>
+            <Typography
+              variant="p"
+              sx={{
+                fontSize: "20px",
+              }}
+            >
+              Just a quick heads up! Your reply will be sent to the ORA Large
+              Language Model to assess its thoughtfulness and to detect any
+              inapproriate content. A score will be given to the reply which
+              will determine your payout amount
+            </Typography>
+          </Box>
+          <Button
+            variant="outlined"
+            style={{ marginLeft: "auto" }}
+            onClick={() => {
+              // const p2r = creditByType[selectedMessageTime.title];
+              // if (p2r.creditRemaining < 0) return;
+              // const p2rRecordId =
+              //   creditByType[selectedMessageTime.title].p2rRecords[0];
+              // onSendMessage(p2rRecordId);
+              console.log(reply.id);
+              onReplyMessage(reply.id);
+            }}
+          >
+            Send
+          </Button>
+        </Box>
+      </Modal>
     </>
   );
 }

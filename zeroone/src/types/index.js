@@ -90,6 +90,7 @@ export const creditInfo = [
 
 export const timeToReachInfo = [
   {
+    title: "slow",
     label: "Slow (~ 3 Days)",
     description: "Free",
     eth: 0,
@@ -97,6 +98,7 @@ export const timeToReachInfo = [
     image: "src/assets/store/bicycle-meme-2.png",
   },
   {
+    title: "average",
     label: "Average (~ 2 Days)",
     description: "0.00005 ETH (~$0.16)",
     eth: 0.00005,
@@ -104,6 +106,7 @@ export const timeToReachInfo = [
     image: "src/assets/store/flying-myvi.png",
   },
   {
+    title: "fast",
     label: "Fast (~ Within 1 Day)",
     description: "0.0001 ETH (~$0.23)",
     eth: 0.0001,

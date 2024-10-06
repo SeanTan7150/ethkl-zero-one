@@ -4,6 +4,7 @@ export default function SenderMessage({
   message = "Message 1",
   direction,
   is_p2r = false,
+  onSelectReply,
 }) {
   return (
     <Box
@@ -45,6 +46,7 @@ export default function SenderMessage({
             marginBottom: 2,
             textDecoration: "underline",
           }}
+          onClick={onSelectReply}
         >
           Reply
         </Button>

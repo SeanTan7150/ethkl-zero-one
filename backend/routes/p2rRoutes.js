@@ -25,8 +25,15 @@ router.get("/getP2RRecord/:address", async (req, res) => {
 
 // POST API to create a P2R Record
 router.post("/createP2RRecord", async (req, res) => {
-  const { p2rRecordID, user_address, artist_address, credit, type } = req.body;
+  const {
+    p2r_id: p2rRecordID,
+    user_address,
+    artist_address,
+    credit,
+    type,
+  } = req.body;
 
+  console.log(req.body);
   try {
     if (!p2rRecordID || !user_address || !artist_address || !credit || !type) {
       return res
@@ -136,6 +143,7 @@ router.get("/getP2RRecords/:user_address/:artist_address", async (req, res) => {
       records,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch P2R records",
